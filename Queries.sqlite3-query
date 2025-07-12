@@ -1,0 +1,10 @@
+-- database: ./database.db
+
+-- This SQL query retrieves all records from the Food table
+SELECT * FROM Food;
+
+--This SQL query retrieves all records from the Food table where the type is vegan
+SELECT * FROM Food f JOIN Food_Type ft ON f.food_id = ft.food_id WHERE ft.is_vegan=1;  
+
+--This SQL query retrieves a record of the sum total of an order
+SELECT ol.order_id,(f.food_price*ol.quantity) AS total FROM Food f JOIN Order_Food ol On f.food_id = ol.food_id
