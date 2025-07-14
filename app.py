@@ -1,4 +1,5 @@
-from flask import Flask, g
+from flask import Flask, g, request, redirect, render_template, session, url_for
+
 import sqlite3
 DATABASE = 'database.db'
 
@@ -27,8 +28,20 @@ def query_db(query, args=(), one=False):
 @app.route('/')
 def home():
     #home page- menu so name, price, food type
-    sql = "SELECT * FROM Customer"
+    sql = """
+                SELECT * FROM Food
+                """ 
     results = query_db(sql)
-    return str(results) # unfinished, just need to set up a query
+    return str(results)
+#Later to be organised depending on website layout / price / type etc
+
+@app.route('/')
+def food(food_id):
+    #gives further information about a specific food item
+    sql = """
+                SELECT * FROM Food_Nutrition n JOIN Food f On n.food_id = f.food_id"""
+    
+
+
 if __name__ == "__main__":
     app.run(debug=True)
