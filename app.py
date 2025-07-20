@@ -40,7 +40,7 @@ def food(food_id):
     food_id = int(food_id)
     #gives further information about a specific food item
     sql = """
-                SELECT f.food_name, n.* FROM Food_Nutrition n JOIN Food f On f.food_id = n.food_id WHERE f.food_id = ? 
+                SELECT f.food_name, n.* FROM Food_Nutrition n JOIN Food f On f.food_id = n.food_id WHERE f.food_id = ?
                 """
     results = query_db(sql, (food_id,), True)
     return str(results)    
