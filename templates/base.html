@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
-    <link rel="stylesheet" href={{url_for('static', filename='stylesheet.css')}}">
-    <link rel=""stylsheet" href=https://www.w3schools.com/w3css/4/w3.css>
+    <link rel="stylesheet" href="{{url_for('static', filename='stylesheet.css')}}">
+    <link rel="stylsheet" href=https://www.w3schools.com/w3css/4/w3.css>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
 </head>
@@ -13,21 +13,23 @@
     <!-- Shared Header -->
      <header class="w3-container w3-teal">
         <h1>Menu></h1>
+     </header>   
     <!-- Shared Navbar --> 
      <nav class="w3-bar w3-light-grey">
-        <a href="{{ url('menu')}}" class="w3-bar-item w3-button">Menu</a>
-        <a href="{{ url('rewards')}}" class="w3-bar-item w3-button">Rewards</a>
-        <a href="{{ url('offers')}}" class="w3-bar-item w3-button">Offers</a>
-        <a href="{{ url('locations')}}" class="w3-bar-item w3-button">Locations</a>
+        <a href="{{ url_for('menu')}}" class="w3-bar-item w3-button">Menu</a>
+        <a href="{{ url_for('rewards')}}" class="w3-bar-item w3-button">Rewards</a>
+        <a href="{{ url_for('offers')}}" class="w3-bar-item w3-button">Offers</a>
+        <a href="{{ url_for('locations')}}" class="w3-bar-item w3-button">Locations</a>
     </nav>
-<main> 
+
+    <main> 
     {% block body %}
     {% endblock %}
-</main>   
+    </main>   
 
-<!-- Shared Footer-->
-<footer class="w3-container w3-teal">
+    <!-- Shared Footer-->
+    <footer class="w3-container w3-teal">
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium incidunt doloribus facilis culpa sequi quos modi commodi hic provident error, officiis mollitia qui nesciunt facere. Explicabo eligendi consectetur culpa nisi!</p>
-</footer>
+    </footer>
 </body>
 </html>
