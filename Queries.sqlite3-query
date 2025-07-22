@@ -8,3 +8,6 @@ SELECT * FROM Food f JOIN Food_Type ft ON f.food_id = ft.food_id WHERE ft.is_veg
 
 --This SQL query retrieves a record of the sum total of an order
 SELECT ol.order_id,(f.food_price*ol.quantity) AS total FROM Food f JOIN Order_Food ol On f.food_id = ol.food_id
+
+-- This SQL query returns the name of a food item and its nutritional information
+SELECT f.food_name, n.* FROM Food_Nutrition n JOIN Food f On f.food_id = n.food_id GROUP BY f.food_name;
