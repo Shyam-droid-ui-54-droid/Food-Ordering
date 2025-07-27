@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='stylesheet.css')}}">
-    <link rel="stylsheet" href=https://www.w3schools.com/w3css/4/w3.css>
+    <title>Fast Food Shop</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/stylesheet.css')}}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
 </head>
 <body>
     <!-- Shared Header -->
-     <header class="w3-container w3-teal">
-        <h1>Menu></h1>
+     <header class="company-name-header">
+        <h1>Fast Food Shop</h1>
      </header>   
+
     <!-- Shared Navbar --> 
      <nav class="w3-bar w3-light-grey">
         <a href="{{ url_for('menu')}}" class="w3-bar-item w3-button">Menu</a>

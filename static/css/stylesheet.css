@@ -2,7 +2,37 @@ body {font-family: 'Open Sans', sans-serif;
 
 }
 
-h1, h2, h3 {font-family: 'Bebas Neue', sans-serifl
-text-transform: uppercase;
-letter-spacing: 2px;
+h1, h2, h3 {font-family: 'Bebas Neue', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
+
+/* Colours
+* 7B4019 - Dark Brown
+* FF7D29 - Orange
+* FFBF78 - Light Orange
+* FFEEA9 - Light Yellow
+*/
+
+/* Company Name Styling */
+.company-name-header {
+    background-color: #7B4019;
+    color: #FFEEA9;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.company-name-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4.5em;
+    letter-spacing: 5px;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+
+}
+/*Top Navigation Bar Styling*/
+
+
+
+/* Footer Styling */
