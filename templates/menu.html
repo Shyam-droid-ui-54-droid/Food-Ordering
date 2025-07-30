@@ -2,4 +2,21 @@
 
 {% block body %}
 <h2>Menu</h2>
+
+<!--Menu Items-->
+<div class="menu-page">
+    <div class="food-grid">
+    {% for food in foods %}
+         <div class ="food-item">
+             <img src="{{ url_for('static', filename=food.imageurl or 'images/default-food.jpg') }}" alt="{{ food.food_name }}" class="food-image">
+        <div class ="food-text">    
+             <span class="food-name">{{ food.food_name }}</span>
+            <span class="food-price">${{ food.price }}</span> 
+            
+        </div>
+            <button class="w3-button w3-teal">Add to Cart</button>
+        </div>
+ {% endfor %}
+    </div>
+</div>
 {% endblock %}
