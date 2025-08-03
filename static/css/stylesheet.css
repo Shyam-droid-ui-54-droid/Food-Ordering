@@ -105,7 +105,7 @@ nav.w3-bar .w3-bar-item {
     border-bottom-right-radius: 16px;
 }
   
-.menu-page .cart-sidebar {
+.cart-sidebar {
     position: fixed;
     top:0;
     right:-300px;
@@ -119,13 +119,13 @@ nav.w3-bar .w3-bar-item {
     z-index: 1000;
 }
 
-.menu-page .cart-sidebar.open {
+.cart-sidebar.open {
     right: 0;
 }
 
-.menu-page .cart-button {
+#cart-button {
     position: fixed;
-    top: 20px;
+    top: 50%;
     right: 20px;
     background-color: #FF7D29;
     color: #ffffff;
