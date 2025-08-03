@@ -1,3 +1,10 @@
+
+html::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
 body {font-family: 'Open Sans', sans-serif;
 
 }
@@ -73,6 +80,10 @@ nav.w3-bar .w3-bar-item {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+     border-color: black;
+    border-style: solid;
+    border-width: 2px;
+    overflow: hidden;
 }
 
 .menu-page .food-image {
@@ -80,8 +91,6 @@ nav.w3-bar .w3-bar-item {
     height:auto;
     aspect-ratio: 4/3;
     object-fit: cover;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
     display:block
 }
 .menu-page .food-text {
@@ -96,6 +105,34 @@ nav.w3-bar .w3-bar-item {
     border-bottom-right-radius: 16px;
 }
   
+.menu-page .cart-sidebar {
+    position: fixed;
+    top:0;
+    right:-300px;
+    width: 300px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
 
+.menu-page .cart-sidebar.open {
+    right: 0;
+}
 
+.menu-page .cart-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #FF7D29;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+}
 

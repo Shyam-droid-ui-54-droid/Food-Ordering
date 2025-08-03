@@ -11,7 +11,7 @@
              <img src="{{ url_for('static', filename=food.imageurl or 'images/default-food.jpg') }}" alt="{{ food.food_name }}" class="food-image">
         <div class ="food-text">    
              <span class="food-name">{{ food.food_name }}</span>
-            <span class="food-price">${{ food.price }}</span> 
+            <span class="food-price">${{ food.food_price }}</span> 
             
         </div>
             <button class="w3-button w3-teal">Add to Cart</button>
@@ -19,4 +19,15 @@
  {% endfor %}
     </div>
 </div>
+
+<!--Cart Sidebar-->
+<button id="cart-button" class="w3-button w3-teal" onclick="toggleCartSidebar()">Cart</button>
+
+<div id="cart-sidebar" class="cart-sidebar">
+    <h3> Cart items </h3>
+    
+</div>
+
+
+
 {% endblock %}
