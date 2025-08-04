@@ -1,4 +1,6 @@
 -- database: ./database.db
+-- SQL queries used in the applications files should not have * (all) columns returned in order to future-proof, and prevent issues 
+-- with columns added later on. 
 
 -- This SQL query retrieves all records from the Food table
 SELECT * FROM Food;
