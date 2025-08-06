@@ -14,26 +14,30 @@
             <span class="food-price">${{ food.food_price }}</span> 
             
         </div>
-            <button class="w3-button w3-teal">Add to Cart</button>
+            <button class="w3-button w3-teal cart-add" data-food_id="{{ food_id }}" data-food_name="{{ food_name }}" data-food_price="{{ food_price }}" >Add to Cart</button>
         </div>
  {% endfor %}
     </div>
 </div>
 
 <!--Cart Sidebar-->
-<div>
+<div id="cart-container" class="cart-container">
     <button id="cart-button" class="cart-button" onclick="toggleCartSidebar()">&#8647</button>
 
     <div id="cart-sidebar" class="cart-sidebar">
         <h3>Cart</h3>
-    
+        <div id ="cart-items">
+            <!-- Cart items will be automatically added here -->
+            <p>No items in cart.</p>
+        </div>
     </div>
 
+    <button id="checkout-button" class="checkout-button">Checkout</button>
 </div>
 
 <script>
     function toggleCartSidebar() {
-    const sidebar = document.getElementById('cart-sidebar');
+    const sidebar = document.getElementById('cart-container');
     console.log('Button clicked');
     sidebar.classList.toggle('open');
 }
