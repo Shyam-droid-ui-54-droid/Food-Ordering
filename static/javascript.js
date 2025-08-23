@@ -18,3 +18,27 @@ function addToCart(foodId, foodName, foodPrice) {
     `;
     container.appendChild(itemDiv);
 }
+
+
+
+
+document.querySelectorAll('.w3-bar-item .w3-button').forEach(button => {
+    button.style.display = 'block';
+});
+
+function openLoginModal() {
+    console.log("Opening login modal");
+    document.getElementById('login-modal').style.display = 'block';
+}
+
+function closeLoginModal() {
+    document.getElementById('login-modal').style.display = 'none';
+}
+
+document.querySelectorAll('.w3-dropdown-click').forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent click from bubbling up
+        this.querySelector('.w3-dropdown-content').classList.toggle('w3-show');
+    });
+});
+

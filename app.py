@@ -1,10 +1,13 @@
-from flask import Flask, g, request, redirect, render_template, session, url_for
+from flask import Flask, g, request, redirect, render_template, session, url_for, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import sqlite3
 DATABASE = 'database.db'
 
 #initialize the Flask application
 app = Flask(__name__)
+
+app.secret_key ='222' # Replace with a secure key for better management of sessions
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -47,11 +50,44 @@ def food(food_id):
     results = query_db(sql, (food_id,), True)
     return str(results)    
 
-@app.route("/offers")
-def offers():
-    #offers page- shows all offers available
-    return render_template("offers.html")
+#Route for the login page
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        
+        if not email or not password:
+            flash("Email and password are required")
+            return redirect(url_for("login"))
+        
+        customer = query_db("SELECT * FROM Customer WHERE email = ?", [email], one=True)
+        
+        if not customer:
+            hashed_password = generate_password_hash(password)
+            conn = get_db()
+            cur = conn.cursor()
+            conn.execute("INSERT INTO Customer (email, password, name) VALUES (?, ?, ?)", [email , hashed_password, request.form["name"]])
+            conn.commit()
+            flash("Account created successfully") 
+            customer = query_db("SELECT * FROM Customer WHERE email = ?", [email] , one=True)
+        
+        if customer and check_password_hash(customer["password"], password):
+            session["customer_id"] = customer["customer_id"]
+            session["email"] = customer["email"]
+            session["name"] = customer["name"]
+            return redirect(url_for("menu"))
+        else: 
+            flash("Invalid email or password")
 
+    return render_template("login.html")
+
+#Route for logout
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You have been logged out")
+    return redirect(url_for("menu"))
 @app.route ("/rewards")
 def rewards():
     #rewards page- displays customer loyalty rewards

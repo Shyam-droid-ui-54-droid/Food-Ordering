@@ -19,9 +19,47 @@
      <nav class="w3-bar w3-light-grey">
         <a href="{{ url_for('menu')}}" class="w3-bar-item w3-button">Menu</a>
         <a href="{{ url_for('rewards')}}" class="w3-bar-item w3-button">Rewards</a>
-        <a href="{{ url_for('offers')}}" class="w3-bar-item w3-button">Offers</a>
         <a href="{{ url_for('locations')}}" class="w3-bar-item w3-button">Locations</a>
+        
+           {% if 'customer_id' in session %}
+           <div class="w3.dropdown-click w3-container w3-right">
+                <button class="w3-bar-item w3-button">
+                    {{session['name'] }} <i class=" fa fa-caret-down"></i>
+                </button>
+                <div class="w3-dropdown-content" style="display: none; z-index: 1000;">
+                    <a href="{{url_for('logout') }}" class="w3-bar-item w3-button">Logout</a>
+                </div>
+            </div>
+        
+        {% else %}
+            <button class="w3-bar-item w3-button" onclick="openLoginModal()">Login</button>
+        {% endif %}
     </nav>
+</div>
+    </nav>
+    
+    <!-- Login Contents -->
+     <div id="login-modal" class="w3-modal">
+        <div class="w3-modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Login</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <p>Name</p>
+                <input class ="w3-input w3-border" type="text" name="name" required> 
+                <p>Email</p>
+                <input class ="w3-input w3-border" type="email" name="email" required>
+                <p>Password</p>
+                <input class ="w3-input w3-border" type="password" name="password" required>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <p class="w3-text-red">{{ messages[0] }}</p>
+                    {% endif %}
+                {% endwith %}
+                <button class="w3-button w3-teal w3-margin-top">Login</button>
+            </form>
+        </div>
+
+     </div>
 
     <main> 
     {% block body %}
