@@ -22,9 +22,9 @@
         <a href="{{ url_for('locations')}}" class="w3-bar-item w3-button">Locations</a>
         
            {% if 'customer_id' in session %}
-           <div class="w3.dropdown-click w3-container w3-right">
-                <button class="w3-bar-item w3-button">
-                    {{session['name'] }} <i class=" fa fa-caret-down"></i>
+           <div class="w3-dropdown-click w3-container w3-right">
+                <button class="w3-bar-item w3-button" onclick="toggleDropdown(this)">
+                   &#x25CB {{session['name'] }} <i class=" fa fa-caret-down"></i>
                 </button>
                 <div class="w3-dropdown-content" style="display: none; z-index: 1000;">
                     <a href="{{url_for('logout') }}" class="w3-bar-item w3-button">Logout</a>

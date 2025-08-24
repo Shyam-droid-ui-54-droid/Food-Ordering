@@ -68,8 +68,8 @@ nav.w3-bar .w3-bar-item {
     z-index: 1;
 }
 
-.w3-dropdown-showing .w3-dropdown-content {
-    display: block;
+.w3-show{
+    display:block !important;
 }
 
 /* Footer Styling */

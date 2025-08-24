@@ -21,9 +21,15 @@ function addToCart(foodId, foodName, foodPrice) {
 
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButtons = document.querySelectorAll('.w3-dropdown-click > button');
+    dropdownButtons.forEach(button => {
+        button.style.display = 'block';
+    });
 
-document.querySelectorAll('.w3-bar-item .w3-button').forEach(button => {
+    document.querySelectorAll('.w3-bar-item .w3-button').forEach(button => {
     button.style.display = 'block';
+    });
 });
 
 function openLoginModal() {
@@ -35,10 +41,15 @@ function closeLoginModal() {
     document.getElementById('login-modal').style.display = 'none';
 }
 
-document.querySelectorAll('.w3-dropdown-click').forEach(dropdown => {
-    dropdown.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent click from bubbling up
-        this.querySelector('.w3-dropdown-content').classList.toggle('w3-show');
-    });
-});
-
+function toggleDropdown(button) {
+    const dropdownContent = button.nextElementSibling;
+    if (dropdownContent) {
+        console.log("Dropdown content found");
+        dropdownContent.classList.toggle('w3-show');
+    }
+    else {
+        console.log("No dropdown content found");
+        return;
+    }
+        console.log("Dropdown toggled");
+    }
