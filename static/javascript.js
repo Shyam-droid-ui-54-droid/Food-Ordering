@@ -43,13 +43,12 @@ function closeLoginModal() {
 
 function toggleDropdown(button) {
     const dropdownContent = button.nextElementSibling;
-    if (dropdownContent) {
+    if (dropdownContent && dropdownContent.classList.contains('w3-dropdown-content')) {
         console.log("Dropdown content found");
         dropdownContent.classList.toggle('w3-show');
     }
     else {
         console.log("No dropdown content found");
-        return;
     }
         console.log("Dropdown toggled");
     }
