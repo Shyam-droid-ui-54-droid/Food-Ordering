@@ -1,3 +1,8 @@
+window.addEventListener('load', updateCartPosition);
+window.addEventListener('scroll', updateCartPosition);
+window.addEventListener('resize', updateCartPosition);
+
+
 document.querySelectorAll('.cart-add')  .forEach(button => {
     button.addEventListener('click', function() {
         const foodId = this.getAttribute('data-food_id');
@@ -18,6 +23,34 @@ function addToCart(foodId, foodName, foodPrice) {
     `;
     container.appendChild(itemDiv);
 }
+
+function updateCartPosition() {
+    const nav = document.querySelector('.w3-bar');
+    const cart = document.getElementById('cart-container');
+
+    if (nav && cart) {
+        const navHeight = nav.offsetHeight;
+        
+        const cartTop = nav.getBoundingClientRect().top <= 0
+            ? navHeight: nav.getBoundingClientRect().top + navHeight;
+
+        cart.style.setProperty('--cart-top', `${cartTop}px`);
+    }
+
+}
+
+const pickupButton = document.getElementById('pickup-button');
+const deliveryButton = document.getElementById('delivery-button');
+
+pickupButton.addEventListener('click', function() {
+    pickupButton.classList.add('selected');
+    deliveryButton.classList.remove('selected');
+});
+
+deliveryButton.addEventListener('click', function() {
+    deliveryButton.classList.add('selected');
+    pickupButton.classList.remove('selected');
+});
 
 
 

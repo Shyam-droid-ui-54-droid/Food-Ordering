@@ -43,7 +43,9 @@ h1, h2, h3 {font-family: 'Bebas Neue', sans-serif;
 nav.w3-bar {
     display: flex;
     justify-content : center;
-    gap: 8vw; 
+    gap: 8vw;
+    position: sticky; 
+    top: 0;
 }
 
 nav.w3-bar .w3-bar-item {
@@ -131,18 +133,20 @@ nav.w3-bar .w3-bar-item {
 .menu-page .cart-add{
     font-size:1em;
 }
- 
+
 
 .cart-container {
-position: fixed;
-    top:0;
+    position: fixed;
+    top: var(--cart-top, 3.5vw);
     right:-21%;
     width: 22%;
-    height: 100%;
+    height: calc(100vh - var(--cart-top, 3.5vw));
     display:flex;
     flex-direction: column;
      transition: right 0.3s ease;
     z-index: 1000;
+    align-self: flex-start;
+    align-content: center;
 }
 
 .cart-container.open {
@@ -150,11 +154,24 @@ position: fixed;
 }
 
 .cart-sidebar {
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content:center;
+    align-items:center;
     background-color: #7d7878;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     overflow-y: auto;
     flex-grow: 1;
+}
+
+.cart-sidebar h3 {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    margin:0;
+    left: 50%;
 }
 
 #cart-button {
@@ -173,6 +190,48 @@ position: fixed;
     border-bottom-left-radius: 8px;
 
 }
+
+.order-type-selector {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    background-color: lightslategray;
+    padding: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-top: 20px; 
+}
+
+.order-selector-button {
+    background-color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.order-selector-button.selected {
+    background-color: red;
+    color: white;
+}
+
+.checkout-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    background-color: lightslategray;
+    padding: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-top: 20px; 
+}
+
 
 /* Media Queries for phones */
 @media (max-width: 600px) {

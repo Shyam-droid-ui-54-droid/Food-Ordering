@@ -29,14 +29,19 @@
     <button id="cart-button" class="cart-button" onclick="toggleCartSidebar()">&#8647</button>
 
     <div id="cart-sidebar" class="cart-sidebar">
-        <h3>Cart</h3>
+        <h3>your order</h3>
         <div id ="cart-items">
             <!-- Cart items will be automatically added here -->
             <p>No items in cart.</p>
         </div>
-    </div>
-
+        
+        <div class="order-type-selector">
+            <button id="pickup-button" class="order-selector-button">Pick-up</button>
+            <button id="delivery-button" class="order-selector-button">Delivery</button>
+        </div>
     <button id="checkout-button" class="checkout-button">Checkout</button>
+    
+    </div>
 </div>
 
 <script>
