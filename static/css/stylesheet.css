@@ -91,6 +91,13 @@ nav.w3-bar .w3-bar-item {
 
 /* Start of Menu Styling */
 /* Menu Styling for food item grid */
+.menu-page {
+    display:flex;
+    width: 100%;
+    transition: width 0.5s ease;
+}
+
+
 .menu-page .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 50%, 300px), 1fr));
@@ -209,7 +216,7 @@ nav.w3-bar .w3-bar-item {
 
 .order-type-selector {
     position: absolute;
-    bottom: 30vh; /* leave space for checkout button */
+    bottom: 32vh; /* leave space for checkout button */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -221,6 +228,7 @@ nav.w3-bar .w3-bar-item {
     padding: 10px;
     border-radius: 20px;
     width: fit-content;
+    white-space: nowrap;
 }
 
 .order-selector-button {

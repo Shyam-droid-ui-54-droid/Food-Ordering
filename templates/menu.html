@@ -46,13 +46,25 @@
 
 <script>
     function toggleCartSidebar() {
-    const sidebar = document.getElementById('cart-container');
-    const cartButton = document.getElementById('cart-button');
-    console.log('Button clicked');
-    sidebar.classList.toggle('open');
+        const sidebar = document.getElementById('cart-container');
+        const cartButton = document.getElementById('cart-button');
+        const menuPage = document.querySelector('.menu-page');
+        console.log('Button clicked');
+        
+        sidebar.classList.toggle('open');
 
-    const isOpen = sidebar.classList.contains('open');
-    cartButton.innerHTML = isOpen ? '&#8649;' : '&#8647;'; 
+        menuPage.classList.toggle('shifted');
+
+        const isOpen = sidebar.classList.contains('open');
+        
+        cartButton.innerHTML = isOpen ? '&#8649;' : '&#8647;'; 
+        
+        
+        if (isOpen) {
+            menuPage.style.width = 'calc(100% - 22%)'; 
+        } else {
+            menuPage.style.width = '100%';
+        }
 }
 </script>
 
