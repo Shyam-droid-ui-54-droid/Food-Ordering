@@ -15,6 +15,7 @@
         <h1>Fast Food Shop</h1>
      </header>   
 
+    
     <!-- Shared Navbar --> 
      <nav class="w3-bar w3-light-grey">
         <a href="{{ url_for('menu')}}" class="w3-bar-item w3-button">Menu</a>
@@ -35,11 +36,12 @@
             <button class="w3-bar-item w3-button" onclick="openLoginModal()">Login</button>
         {% endif %}
     </nav>
+
 </div>
     </nav>
     
     <!-- Login Contents -->
-     <div id="login-modal" class="w3-modal">
+     <div id="login-modal" class="w3-modal" style="z-index: 10000">
         <div class="w3-modal-content">
             <span class="close" onclick="closeLoginModal()">&times;</span>
             <h2>Login</h2>

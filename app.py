@@ -3,12 +3,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import sqlite3
 import json
+import re
 DATABASE = 'database.db'
 
 #initialize the Flask application
 app = Flask(__name__)
 
-app.secret_key ='222' # Replace with a secure key for better management of sessions
+app.secret_key ='6EC9568939D467FC35FE9C7A3E76F' 
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -81,17 +82,29 @@ def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
+        name = request.form.get("name")
         
+        if not re.match(r"^[a-zA-Z0-9_]{1,10}$", name):
+            flash("Name must be between 1 and 10 characters")
+            return redirect(request.referrer or url_for("menu"))
+        
+        if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+            flash("Invalid email")
+            return redirect(url_for("menu"))
+        
+        if len(password) < 8 or not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$", password):
+            flash("Password must have: 8 characters, with at least one number and at least one letter")
+            return redirect(request.referrer or url_for("menu"))
+
         if not email or not password:
             flash("Email and password are required")
-            return redirect(url_for("login"))
+            return redirect(request.referrer or url_for("menu"))
         
         customer = query_db("SELECT * FROM Customer WHERE email = ?", [email], one=True)
         
         if not customer:
             hashed_password = generate_password_hash(password)
             conn = get_db()
-            cur = conn.cursor()
             conn.execute("INSERT INTO Customer (email, password, name) VALUES (?, ?, ?)", [email , hashed_password, request.form["name"]])
             conn.commit()
             flash("Account created successfully") 
@@ -101,11 +114,9 @@ def login():
             session["customer_id"] = customer["customer_id"]
             session["email"] = customer["email"]
             session["name"] = customer["name"]
-            return redirect(url_for("menu"))
+            return redirect(request.referrer or url_for("menu"))
         else: 
             flash("Invalid email or password")
-
-    return render_template("login.html")
 
 #Route for logout
 @app.route("/logout")
