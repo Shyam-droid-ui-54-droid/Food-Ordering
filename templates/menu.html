@@ -9,12 +9,16 @@
     {% for food in foods %}
          <div class ="food-item">
              <img src="{{ url_for('static', filename=food.imageurl or 'images/default-food.jpg') }}" alt="{{ food.food_name }}" class="food-image">
-        <div class ="food-text">    
-             <span class="food-name">{{ food.food_name }}</span>
-            <span class="food-price">${{ food.food_price }}</span> 
-            
-        </div>
-            <button class="w3-button w3-teal cart-add" data-food_id="{{ food_id }}" data-food_name="{{ food_name }}" data-food_price="{{ food_price }}" >Add to Cart</button>
+            <div class ="food-text">    
+                <span class="food-name">{{ food.food_name }}</span>
+                <span class="food-price">${{ food.food_price }}</span> 
+             </div>
+            <button class="w3-button w3-teal cart-add" 
+            data-food_id="{{ food_id }}" 
+            data-food_name="{{ food.food_name }}" 
+            data-food_price="{{ food.food_price }}" >
+            Add to Cart
+            </button>
         </div>
  {% endfor %}
     </div>
@@ -38,8 +42,12 @@
 <script>
     function toggleCartSidebar() {
     const sidebar = document.getElementById('cart-container');
+    const cartButton = document.getElementById('cart-button');
     console.log('Button clicked');
     sidebar.classList.toggle('open');
+
+    const isOpen = sidebar.classList.contains('open');
+    cartButton.innerHTML = isOpen ? '&#8649;' : '&#8647;'; 
 }
 </script>
 

@@ -161,14 +161,16 @@ position: fixed;
     position: absolute;
     top: 50%;
     left: -8%;
-    background-color: #FF7D29;
+    background-color: #7d7878;
     color: #ffffff;
     border: none;
-    padding: 1.2em 2em;
+    padding: 0.4em 0.8em;
     cursor: pointer;
-    font-size: 2vw;
+    font-size: 1vw;
     z-index: 1001;
     color: #000000;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 
 }
 
