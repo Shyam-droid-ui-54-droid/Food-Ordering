@@ -8,7 +8,11 @@
     <div class="food-grid">
     {% for food in foods %}
          <div class ="food-item">
-             <img src="{{ url_for('static', filename=food.imageurl or 'images/default-food.jpg') }}" alt="{{ food.food_name }}" class="food-image">
+             <img src="{{ url_for('static', filename=food.imageurl.strip()) }}" 
+                alt="{{ food.food_name }}" 
+                class="food-image"
+                loading="lazy"
+                srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w,">
             <div class ="food-text">    
                 <span class="food-name">{{ food.food_name }}</span>
                 <span class="food-price">${{ food.food_price }}</span> 
@@ -45,15 +49,16 @@
 </div>
 
 <script>
+    let debounceTimetout;
+
     function toggleCartSidebar() {
         const sidebar = document.getElementById('cart-container');
         const cartButton = document.getElementById('cart-button');
         const menuPage = document.querySelector('.menu-page');
+        const footer = document.querySelector('footer');
         console.log('Button clicked');
         
         sidebar.classList.toggle('open');
-
-        menuPage.classList.toggle('shifted');
 
         const isOpen = sidebar.classList.contains('open');
         
@@ -62,9 +67,20 @@
         
         if (isOpen) {
             menuPage.style.width = 'calc(100% - 22%)'; 
+            footer.style.width = 'calc(100% - 22%)';
         } else {
             menuPage.style.width = '100%';
+            footer.style.width = '100%';
         }
+
+    window.addEventListener('resize', () => {
+        clearTimeout(debounceTimetout);
+        debounceTimetout = setTimeout(() => {
+            updateCartPosition();
+        }, 200);
+    });
+
+    window.addEventListener('load', updateCartPosition);
 }
 </script>
 
