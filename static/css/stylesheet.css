@@ -134,19 +134,18 @@ nav.w3-bar .w3-bar-item {
     font-size:1em;
 }
 
-
 .cart-container {
     position: fixed;
     top: var(--cart-top, 3.5vw);
     right:-21%;
     width: 22%;
-    height: calc(100vh - var(--cart-top, 3.5vw));
+    height: 100vh;
     display:flex;
     flex-direction: column;
-     transition: right 0.3s ease;
+    transition: right 0.3s ease;
     z-index: 1000;
     align-self: flex-start;
-    align-content: center;
+    align-content: flex-start;
 }
 
 .cart-container.open {
@@ -154,16 +153,18 @@ nav.w3-bar .w3-bar-item {
 }
 
 .cart-sidebar {
+    position: relative;
     display:flex;
     flex-direction: column;
     text-align: center;
-    justify-content:center;
     align-items:center;
     background-color: #7d7878;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     overflow-y: auto;
     flex-grow: 1;
+    height: 100%;
+
 }
 
 .cart-sidebar h3 {
@@ -174,12 +175,27 @@ nav.w3-bar .w3-bar-item {
     left: 50%;
 }
 
+#cart-items {
+    position: relative;
+    top: 30px;
+    margin-top: 4vh;
+    width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color:white;
+    height: 50vh;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+
+
+
 #cart-button {
     position: absolute;
     top: 50%;
     left: -8%;
     background-color: #7d7878;
-    color: #ffffff;
     border: none;
     padding: 0.4em 0.8em;
     cursor: pointer;
@@ -192,6 +208,10 @@ nav.w3-bar .w3-bar-item {
 }
 
 .order-type-selector {
+    position: absolute;
+    bottom: 30vh; /* leave space for checkout button */
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -201,7 +221,6 @@ nav.w3-bar .w3-bar-item {
     padding: 10px;
     border-radius: 20px;
     width: fit-content;
-    margin-top: 20px; 
 }
 
 .order-selector-button {
@@ -220,16 +239,19 @@ nav.w3-bar .w3-bar-item {
 }
 
 .checkout-button {
+    position: absolute;
+    bottom: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
     font-size: 1.2rem;
     background-color: lightslategray;
     padding: 10px;
     border-radius: 20px;
     width: fit-content;
-    margin-top: 20px; 
+    z-index: 1002;
 }
 
 
