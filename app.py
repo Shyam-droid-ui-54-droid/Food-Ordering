@@ -1,4 +1,4 @@
-from flask import Flask, g, request, redirect, render_template, session, url_for, flash, make_response
+from flask import Flask, g, request, redirect, render_template, session, url_for, flash, make_response, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import sqlite3
@@ -123,5 +123,22 @@ def locations():
     #locations page - displays location information of restraunts
     return render_template("locations.html")
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
+@app.route('/example404')
+def example404():
+    abort(404)
+
+@app.errorhandler(505)
+def server_error(error):
+    return render_template('505.html'), 505
+
+@app.route('/cause505')
+def cause_505():
+    abort(505)
+
 if __name__ == "__main__":
     app.run(debug=True)
+

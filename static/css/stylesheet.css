@@ -53,6 +53,7 @@ nav.w3-bar .w3-bar-item {
 .footer {
     transition: width 0.3s ease;
     text-align: flex-start;
+    font-size: 1vw
 }
 
 /* Start of Menu Styling */
