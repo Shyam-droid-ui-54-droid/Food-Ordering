@@ -1,43 +1,69 @@
 window.addEventListener('load', updateCartPosition);
-window.addEventListener('scroll', updateCartPosition);
-window.addEventListener('resize', updateCartPosition);
+window.addEventListener('scroll', updateCartPosition)
+
+let debounceTimer;
+
+function debounceUpdateCartPosition() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updateCartPosition, 50);
+}
 
 
-document.querySelectorAll('.cart-add')  .forEach(button => {
+document.querySelectorAll('.cart-add').forEach(button => {
     button.addEventListener('click', function() {
         const foodId = this.getAttribute('data-food_id');
         const foodName = this.getAttribute('data-food_name');
         const foodPrice = this.getAttribute('data-food_price');
-
         addToCart(foodId, foodName, foodPrice);
     });
-})
+});
 
 function addToCart(foodId, foodName, foodPrice) {
-    const container = document.getElementById('cart-items');
-    const itemDiv = document.createElement('div');
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        const container = document.getElementById('cart-items');
+        const fragment = document.createDocumentFragment();
+    
+        const itemDiv = document.createElement('div');
     itemDiv.classList.add('cart-item');
+    itemDiv.setAttribute('data-food_id', foodId);
     itemDiv.innerHTML = `
         <span class="cart-item-name">${foodName}</span>
         <span class="cart-item-price">$${foodPrice}</span>
     `;
     container.appendChild(itemDiv);
+
+    fragment.appendChild(itemDiv);
+    container.appendChild(fragment);
+    }, 200);
 }
 
+let ticking = false;
 function updateCartPosition() {
     const nav = document.querySelector('.w3-bar');
     const cart = document.getElementById('cart-container');
-
+    
     if (nav && cart) {
         const navHeight = nav.offsetHeight;
-        
-        const cartTop = nav.getBoundingClientRect().top <= 0
-            ? navHeight: nav.getBoundingClientRect().top + navHeight;
+        const navRect = nav.getBoundingClientRect();
+        const cartTop = navRect.top <= 0 ? navHeight : navRect.top + navHeight;
 
-        cart.style.setProperty('--cart-top', `${cartTop}px`);
+        console.log("navHeight:", navHeight); // Debugging
+        console.log("navRect.top:", navRect.top); // Debugging
+        console.log("cartTop:", cartTop); // Debugging
+
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                cart.style.setProperty('--cart-top', `${cartTop}px`);
+                ticking = false;
+            });
+
+            ticking = true;
+        }
     }
-
 }
+
+
 
 const pickupButton = document.getElementById('pickup-button');
 const deliveryButton = document.getElementById('delivery-button');

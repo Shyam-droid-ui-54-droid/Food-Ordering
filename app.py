@@ -1,7 +1,8 @@
-from flask import Flask, g, request, redirect, render_template, session, url_for, flash
+from flask import Flask, g, request, redirect, render_template, session, url_for, flash, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import sqlite3
+import json
 DATABASE = 'database.db'
 
 #initialize the Flask application
@@ -33,11 +34,35 @@ def query_db(query, args=(), one=False):
 @app.route('/')
 def menu():
     #home page- menu so name, price, food type
+    cart = session.get('cart', [])
+
     sql = """
                 SELECT * FROM Food
                 """ 
     results = query_db(sql)
-    return render_template("menu.html", foods=results)
+    return render_template("menu.html", foods=results, cart=cart)
+
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    food_id = request.form.get('food_id')
+    food_name = request.form.get ('food_name')
+    food_price = request.form.get ('food_price')
+
+    cart = session.get('cart', [])
+
+    print(f"Current cart before adding: {cart}")
+
+    cart.append({
+        'food_id': food_id,
+        'food_name': food_name,
+        'food_price': food_price
+    })
+
+    session['cart'] = cart
+
+    print(f"Updated cart after adding: {cart}")
+
+    return redirect(url_for('menu'))
 
 #Route for the food information page / to be made into modal
 @app.route("/food/<int:food_id>")

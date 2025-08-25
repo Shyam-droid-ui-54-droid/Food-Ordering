@@ -1,24 +1,22 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h2>Menu</h2>
-
 <!--Menu Items-->
 <div class="menu-page">
     <div class="food-grid">
     {% for food in foods %}
          <div class ="food-item">
-             <img src="{{ url_for('static', filename=food.imageurl|trim) }}" 
+             <img src="{{ url_for('static', filename=food.imageurl) }}" 
                 alt="{{ food.food_name }}" 
                 class="food-image"
                 loading="lazy"
-                srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w,">
+                srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w">
             <div class ="food-text">    
                 <span class="food-name">{{ food.food_name }}</span>
                 <span class="food-price">${{ food.food_price }}</span> 
              </div>
             <button class="w3-button w3-teal cart-add" 
-            data-food_id="{{ food_id }}" 
+            data-food_id="{{ food.food_id }}" 
             data-food_name="{{ food.food_name }}" 
             data-food_price="{{ food.food_price }}" >
             Add to Cart
@@ -28,15 +26,19 @@
     </div>
 </div>
 
-<!--Cart Sidebar-->
-<div id="cart-container" class="cart-container">
-    <button id="cart-button" class="cart-button" onclick="toggleCartSidebar()">&#8647</button>
+<!-- Cart Sidebar -->
+<aside id="cart-container" class="cart-container">
+    <button id="cart-button" class="cart-button" onclick="toggleCartSidebar()">&#8647;</button>
 
     <div id="cart-sidebar" class="cart-sidebar">
-        <h3>your order</h3>
-        <div id ="cart-items">
+        <h3>Your Order</h3>
+        <div id="cart-items">
             <!-- Cart items will be automatically added here -->
-            <p>No items in cart.</p>
+            {% for item in cart %}
+                <p>{{ item.food_name }} - ${{ item.food.price }}</p>
+            {% else %}
+                <p>No items in cart.</p>
+            {% endfor %}
         </div>
         
         <div class="order-type-selector">
@@ -44,44 +46,65 @@
             <button id="delivery-button" class="order-selector-button">Delivery</button>
         </div>
         <button id="checkout-button" class="checkout-button">Checkout</button>
-    
     </div>
-</div>
+</aside>
+
 
 <script>
-    let debounceTimetout;
+let isProcessing = false;
 
-    function toggleCartSidebar() {
+// Set initial state when the page loads
+window.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('cart-container');
+    const cartButton = document.getElementById('cart-button');
+    const foodItems = document.querySelectorAll('.food-item');
+    const menuPage = document.querySelector('.menu-page');
+    
+    // Initially open the sidebar
+    sidebar.classList.add('open'); // Make the sidebar open by default
+    sidebar.style.transform = 'translateX(0)'; // Ensure it's visible from the start
+    menuPage.classList.remove('shrink'); // Remove the shrink layout
+    foodItems.forEach(item => item.style.transform = 'scale(1)'); // Ensure food items are not shrunk initially
+    cartButton.innerHTML = '&#8649;'; // Set button to close icon by default
+});
+
+function toggleCartSidebar() {
+    if (isProcessing) return; // Prevent multiple rapid clicks
+    isProcessing = true;
+
+    requestAnimationFrame(() => {
         const sidebar = document.getElementById('cart-container');
         const cartButton = document.getElementById('cart-button');
+        const foodItems = document.querySelectorAll('.food-item');
         const menuPage = document.querySelector('.menu-page');
-        const footer = document.querySelector('footer');
-        console.log('Button clicked');
-        
-        sidebar.classList.toggle('open');
-
         const isOpen = sidebar.classList.contains('open');
         
-        cartButton.innerHTML = isOpen ? '&#8649;' : '&#8647;'; 
+        // Toggle sidebar and update button icon
+        sidebar.classList.toggle('open');
+        cartButton.innerHTML = isOpen ? '&#8647;' : '&#8649';; // Toggle the cart button 
         
-        
+        // Apply scaling and padding adjustments
         if (isOpen) {
-            menuPage.style.width = 'calc(100% - 22%)'; 
-            footer.style.width = 'calc(100% - 22%)';
+            sidebar.style.transform = 'translateX(100%)'; // Hide the sidebar
+            menuPage.classList.add('shrink');
+            foodItems.forEach(item => item.style.transform = 'scale(1)'); // Return food items to original size
         } else {
-            menuPage.style.width = '100%';
-            footer.style.width = '100%';
+            sidebar.style.transform = 'translateX(0)'; // Show the sidebar
+            menuPage.classList.remove('shrink');
+            foodItems.forEach(item => item.style.transform = 'scale(0.9)'); // Shrink food items
         }
 
-    window.addEventListener('resize', () => {
-        clearTimeout(debounceTimetout);
-        debounceTimetout = setTimeout(() => {
-            updateCartPosition();
-        }, 200);
+        isProcessing = false;
     });
-
-    window.addEventListener('load', updateCartPosition);
 }
+
+
+
+
+
+
+
+
 </script>
 
 
