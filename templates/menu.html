@@ -8,7 +8,7 @@
     <div class="food-grid">
     {% for food in foods %}
          <div class ="food-item">
-             <img src="{{ url_for('static', filename=food.imageurl.strip()) }}" 
+             <img src="{{ url_for('static', filename=food.imageurl|trim) }}" 
                 alt="{{ food.food_name }}" 
                 class="food-image"
                 loading="lazy"
