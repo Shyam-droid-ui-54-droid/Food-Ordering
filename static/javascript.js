@@ -1,5 +1,14 @@
 window.addEventListener('load', updateCartPosition);
-window.addEventListener('scroll', updateCartPosition)
+window.addEventListener('scroll', updateCartPosition);
+
+window.addEventListener('load', function () {
+    updateTotalPrice();
+    document.querySelectorAll('.item-quantity').forEach(input => {
+        input.addEventListener('change', function () {
+            updateItemTotal(this);
+        });
+    });
+});
 
 let debounceTimer;
 
@@ -8,9 +17,8 @@ function debounceUpdateCartPosition() {
     debounceTimer = setTimeout(updateCartPosition, 50);
 }
 
-
 document.querySelectorAll('.cart-add').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         const foodId = this.getAttribute('data-food_id');
         const foodName = this.getAttribute('data-food_name');
         const foodPrice = this.getAttribute('data-food_price');
@@ -19,23 +27,80 @@ document.querySelectorAll('.cart-add').forEach(button => {
 });
 
 function addToCart(foodId, foodName, foodPrice) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        const container = document.getElementById('cart-items');
-        const fragment = document.createDocumentFragment();
-    
-        const itemDiv = document.createElement('div');
-    itemDiv.classList.add('cart-item');
-    itemDiv.setAttribute('data-food_id', foodId);
-    itemDiv.innerHTML = `
-        <span class="cart-item-name">${foodName}</span>
-        <span class="cart-item-price">$${foodPrice}</span>
-    `;
-    container.appendChild(itemDiv);
+    const formData = new FormData();
+    formData.append('food_id', foodId);
+    formData.append('food_name', foodName);
+    formData.append('food_price', foodPrice);
 
-    fragment.appendChild(itemDiv);
-    container.appendChild(fragment);
-    }, 200);
+    fetch('/add_to_cart', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateCartDisplay(data.cart);
+    })
+    .catch(error => console.error('Error adding to cart:', error));
+}
+
+function updateCartDisplay(cart) {
+    const cartContainer = document.getElementById('cart-items');
+    cartContainer.innerHTML = ''; // Clear current cart display
+
+    cart.forEach(item => {
+        const itemDiv = document.createElement('tr');
+        itemDiv.classList.add('cart-item');
+        itemDiv.innerHTML = `
+            <td><input type="number" class="item-quantity" value="${item.quantity}" min="1" data-food-id="${item.food_id}"></td>
+            <td>${item.food_name}</td>
+            <td>$${item.food_price}</td>
+            <td class="item-total">$${item.total_price}</td>
+        `;
+        cartContainer.appendChild(itemDiv);
+    });
+
+    updateTotalPrice(cart);
+}
+
+function updateTotalPrice(cart) {
+    let total = 0;
+    cart.forEach(item => {
+        total += item.total_price;
+    });
+    document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+}
+
+function updateItemTotal(inputElement) {
+    const quantity = inputElement.value;
+    const row = inputElement.closest('tr');
+    const price = parseFloat(row.cells[2].textContent.replace('$', ''));
+    const totalCell = row.querySelector('.item-total');
+
+    const totalPrice = quantity * price;
+    totalCell.textContent = `$${totalPrice.toFixed(2)}`;
+
+    updateTotalPrice();
+
+    const foodId = inputElement.getAttribute('data-food-id');
+
+    // Send the updated quantity to the server
+    updateCartOnServer(foodId, quantity);
+}
+
+function updateCartOnServer(foodId, quantity) {
+    const formData = new FormData();
+    formData.append('food_id', foodId);
+    formData.append('quantity', quantity);
+
+    fetch('/update_cart', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateCartDisplay(data.cart);
+    })
+    .catch(error => console.error('Error updating cart:', error));
 }
 
 let ticking = false;
@@ -48,10 +113,6 @@ function updateCartPosition() {
         const navRect = nav.getBoundingClientRect();
         const cartTop = navRect.top <= 0 ? navHeight : navRect.top + navHeight;
 
-        console.log("navHeight:", navHeight); // Debugging
-        console.log("navRect.top:", navRect.top); // Debugging
-        console.log("cartTop:", cartTop); // Debugging
-
         if (!ticking) {
             window.requestAnimationFrame(function() {
                 cart.style.setProperty('--cart-top', `${cartTop}px`);
@@ -62,8 +123,6 @@ function updateCartPosition() {
         }
     }
 }
-
-
 
 const pickupButton = document.getElementById('pickup-button');
 const deliveryButton = document.getElementById('delivery-button');
@@ -78,8 +137,6 @@ deliveryButton.addEventListener('click', function() {
     pickupButton.classList.remove('selected');
 });
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownButtons = document.querySelectorAll('.w3-dropdown-click > button');
     dropdownButtons.forEach(button => {
@@ -87,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.querySelectorAll('.w3-bar-item .w3-button').forEach(button => {
-    button.style.display = 'block';
+        button.style.display = 'block';
     });
 });
 
@@ -109,5 +166,5 @@ function toggleDropdown(button) {
     else {
         console.log("No dropdown content found");
     }
-        console.log("Dropdown toggled");
-    }
+    console.log("Dropdown toggled");
+}

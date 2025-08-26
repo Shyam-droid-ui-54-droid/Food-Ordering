@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 
 {% block body %}
-<!--Menu Items-->
+<!-- Menu Items -->
 <div class="menu-page">
     <div class="food-grid">
-    {% for food in foods %}
-         <div class ="food-item">
-             <img src="{{ url_for('static', filename=food.imageurl) }}" 
-                alt="{{ food.food_name }}" 
-                class="food-image"
-                loading="lazy"
-                srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w">
-            <div class ="food-text">    
-                <span class="food-name">{{ food.food_name }}</span>
-                <span class="food-price">${{ food.food_price }}</span> 
-             </div>
-            <button class="w3-button w3-teal cart-add" 
-            data-food_id="{{ food.food_id }}" 
-            data-food_name="{{ food.food_name }}" 
-            data-food_price="{{ food.food_price }}" >
-            Add to Cart
-            </button>
-        </div>
- {% endfor %}
+        {% for food in foods %}
+            <div class="food-item">
+                <img src="{{ url_for('static', filename=food.imageurl) }}" 
+                    alt="{{ food.food_name }}" 
+                    class="food-image"
+                    loading="lazy"
+                    srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w">
+                <div class="food-text">    
+                    <span class="food-name">{{ food.food_name }}</span>
+                    <span class="food-price">${{ food.food_price }}</span> 
+                </div>
+                <button class="w3-button w3-teal cart-add" 
+                    data-food_id="{{ food.food_id }}" 
+                    data-food_name="{{ food.food_name }}" 
+                    data-food_price="{{ food.food_price }}">
+                    Add to Cart
+                </button>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -32,42 +32,132 @@
 
     <div id="cart-sidebar" class="cart-sidebar">
         <h3>Your Order</h3>
-        <div id="cart-items">
-            <!-- Cart items will be automatically added here -->
-            {% for item in cart %}
-                <p>{{ item.food_name }} - ${{ item.food.price }}</p>
-            {% else %}
-                <p>No items in cart.</p>
-            {% endfor %}
+
+        <!-- Cart Items Table -->
+        <table id="cart-items">
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td>
+                            <input type="number" class="item-quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.food_id }}" onchange="updateItemTotal(this)">
+                        </td>
+                        <td>{{ item.food_name }}</td>
+                        <td>${{ item.food_price }}</td>
+                        <td class="item-total">${{ item.total_price }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No items in cart.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total Price -->
+        <div class="total-price">
+            <span>Total:</span>
+            <span id="total-price">${{ total_price }}</span>
         </div>
-        
+
         <div class="order-type-selector">
             <button id="pickup-button" class="order-selector-button">Pick-up</button>
             <button id="delivery-button" class="order-selector-button">Delivery</button>
         </div>
+
         <button id="checkout-button" class="checkout-button">Checkout</button>
     </div>
 </aside>
 
+<!-- Embed cart data as JSON -->
+<script id="cart-data" type="application/json">
+    {{ cart | tojson }}
+</script>
 
 <script>
 let isProcessing = false;
 
 // Set initial state when the page loads
 window.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('cart-container');
-    const cartButton = document.getElementById('cart-button');
-    const foodItems = document.querySelectorAll('.food-item');
-    const menuPage = document.querySelector('.menu-page');
-    
-    // Initially open the sidebar
-    sidebar.classList.add('open'); // Make the sidebar open by default
-    sidebar.style.transform = 'translateX(0)'; // Ensure it's visible from the start
-    menuPage.classList.remove('shrink'); // Remove the shrink layout
-    foodItems.forEach(item => item.style.transform = 'scale(1)'); // Ensure food items are not shrunk initially
-    cartButton.innerHTML = '&#8649;'; // Set button to close icon by default
+    const cartData = JSON.parse(document.getElementById('cart-data').textContent); // Get cart data
+    updateCartDisplay(cartData); // Update the cart display based on session data
+    updateTotalPrice(cartData); // Update total price on page load
 });
 
+// Update the cart display based on cart data
+function updateCartDisplay(cart) {
+    const cartContainer = document.getElementById('cart-items');
+    cartContainer.innerHTML = ''; // Clear existing items
+
+    cart.forEach(item => {
+        const itemRow = document.createElement('tr');
+        itemRow.innerHTML = `
+            <td>
+                <input type="number" class="item-quantity" value="${item.quantity}" min="1" data-item-id="${item.food_id}" onchange="updateItemTotal(this)">
+            </td>
+            <td>${item.food_name}</td>
+            <td>$${item.food_price}</td>
+            <td class="item-total">$${item.total_price}</td>
+        `;
+        cartContainer.appendChild(itemRow);
+    });
+}
+
+// Update the total price displayed in the cart
+function updateTotalPrice(cart) {
+    let totalPrice = 0;
+    cart.forEach(item => totalPrice += item.total_price);
+    document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
+}
+
+// When quantity changes, update the total and backend (session)
+function updateItemTotal(inputElement) {
+    const quantity = parseInt(inputElement.value, 10);
+    const row = inputElement.closest('tr');
+    const price = parseFloat(row.cells[2].textContent.replace('$', ''));
+    const totalPriceCell = row.querySelector('.item-total');
+    
+    const totalPrice = quantity * price;
+    totalPriceCell.textContent = `$${totalPrice.toFixed(2)}`;
+
+    // Update total price on the page
+    const cartData = JSON.parse(document.getElementById('cart-data').textContent);
+    cartData.forEach(item => {
+        if (item.food_id == inputElement.dataset.itemId) {
+            item.quantity = quantity;
+            item.total_price = totalPrice;
+        }
+    });
+
+    updateTotalPrice(cartData); // Recalculate and update the total price in the cart
+    updateCartSession(cartData); // Send updated cart data back to session
+}
+
+// Function to update the cart in the backend (session)
+function updateCartSession(cartData) {
+    fetch('/update_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cart: cartData }),
+    })
+    .then(response => response.json())
+    .then(updatedCart => {
+        // Update session cart after update
+        document.getElementById('cart-data').textContent = JSON.stringify(updatedCart.cart);
+    })
+    .catch(error => console.error('Error updating cart:', error));
+}
+
+// Toggle the cart sidebar
 function toggleCartSidebar() {
     if (isProcessing) return; // Prevent multiple rapid clicks
     isProcessing = true;
@@ -81,7 +171,7 @@ function toggleCartSidebar() {
         
         // Toggle sidebar and update button icon
         sidebar.classList.toggle('open');
-        cartButton.innerHTML = isOpen ? '&#8647;' : '&#8649';; // Toggle the cart button 
+        cartButton.innerHTML = isOpen ? '&#8647;' : '&#8649;'; // Toggle the cart button 
         
         // Apply scaling and padding adjustments
         if (isOpen) {
@@ -97,15 +187,6 @@ function toggleCartSidebar() {
         isProcessing = false;
     });
 }
-
-
-
-
-
-
-
-
 </script>
-
 
 {% endblock %}
