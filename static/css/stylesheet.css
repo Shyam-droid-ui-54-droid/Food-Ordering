@@ -97,7 +97,7 @@ nav.w3-bar .w3-bar-item {
     border-color: black;
     border-style: solid;
     border-width: 2px;
-    width: 100%;
+    width: 90%; /* Reduce width */
     transition: transform 0.3s ease, width 0.3s ease;
 }
 
@@ -141,7 +141,6 @@ nav.w3-bar .w3-bar-item {
     top: var(--cart-top, 60px); /* Default to 60px if --cart-top is not set */
 }
 
-
 .cart-container.open {
     transform: translateX(0); /* Slide in the sidebar */
 }
@@ -178,8 +177,32 @@ nav.w3-bar .w3-bar-item {
     background-color: white;
     height: 50vh;
     max-height: 50vh;
+    font-size: 0.8em;
     overflow-y: auto;
 }
+
+#cart-items .item-quantity {
+    cursor: not-allowed;
+    width: 2vw;
+    -webkit-appearance: none; /* For Chrome and Safari */
+    appearance: none; /* For other browsers */
+    margin: 0;
+    pointer-events: none;
+}
+
+#cart-items .item-quantity[readonly] {
+    cursor:not-allowed;
+}
+
+/* Removing spinner arrows for WebKit browsers (Chrome, Safari) */
+#cart-items .item-quantity::-webkit-outer-spin-button,
+#cart-items .item-quantity::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+
 
 #cart-button {
     position: absolute;
@@ -198,10 +221,6 @@ nav.w3-bar .w3-bar-item {
 }
 
 .order-type-selector {
-    position: relative;  
-    bottom: auto;  
-    left: 50%;
-    transform: translateX(-50%);  
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -214,9 +233,8 @@ nav.w3-bar .w3-bar-item {
     white-space: nowrap;
     margin-top: 20px;
     z-index: 1002;
+    /* Remove left: 50% and transform */
 }
-
-
 
 .order-selector-button {
     background-color: #ffffff;
@@ -234,12 +252,9 @@ nav.w3-bar .w3-bar-item {
 }
 
 .checkout-button {
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    flex-direction: row;
     justify-content: center;
+    align-items: center;
     font-size: 1.2rem;
     background-color: lightslategray;
     padding: 10px;

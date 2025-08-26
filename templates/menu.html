@@ -47,7 +47,7 @@
                 {% for item in cart %}
                     <tr>
                         <td>
-                            <input type="number" class="item-quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.food_id }}" onchange="updateItemTotal(this)">
+                            <input type="number" class="item-quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.food_id }}" onchange="updateItemTotal(this)" disabled>
                         </td>
                         <td>{{ item.food_name }}</td>
                         <td>${{ item.food_price }}</td>
