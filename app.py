@@ -93,6 +93,19 @@ def add_to_cart():
     session['cart'] = cart
     return jsonify({'cart': cart})
 
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    food_id = request.form.get('food_id')
+    if not food_id:
+        return jsonify({'error': 'Missing food_id'}), 400
+
+    cart = session.get('cart', [])
+
+    # Remove the item with matching food_id
+    cart = [item for item in cart if str(item['food_id']) != str(food_id)]
+
+    session['cart'] = cart
+    return jsonify({'cart': cart})
 
 
 # Route to add a new customer (for login, registration)

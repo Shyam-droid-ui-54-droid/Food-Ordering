@@ -2,7 +2,8 @@ window.addEventListener('load', updateCartPosition);
 window.addEventListener('scroll', updateCartPosition);
 
 window.addEventListener('load', function () {
-    updateTotalPrice();
+    const cartData = JSON.parse(document.getElementById('cart-data')?.textContent || '[]');
+    updateTotalPrice(cartData);
     document.querySelectorAll('.item-quantity').forEach(input => {
         input.addEventListener('change', function () {
             updateItemTotal(this);
@@ -44,22 +45,48 @@ function addToCart(foodId, foodName, foodPrice) {
 }
 
 function updateCartDisplay(cart) {
-    const cartContainer = document.getElementById('cart-items');
-    cartContainer.innerHTML = ''; // Clear current cart display
+    const cartBody = document.querySelector('#cart-items tbody');
+    cartBody.innerHTML = ''; // Clear only tbody
 
     cart.forEach(item => {
-        const itemDiv = document.createElement('tr');
-        itemDiv.classList.add('cart-item');
-        itemDiv.innerHTML = `
+        const itemRow = document.createElement('tr');
+        itemRow.classList.add('cart-item');
+        itemRow.innerHTML = `
             <td><input type="number" class="item-quantity" value="${item.quantity}" min="1" data-food-id="${item.food_id}"></td>
             <td>${item.food_name}</td>
-            <td>$${item.food_price}</td>
-            <td class="item-total">$${item.total_price}</td>
+            <td>$${parseFloat(item.food_price).toFixed(2)}</td>
+            <td class="item-total">$${parseFloat(item.total_price).toFixed(2)}</td>
+            <td><button class="remove-item" data-food-id="${item.food_id}" title="Remove">×</button></td>
         `;
-        cartContainer.appendChild(itemDiv);
+        cartBody.appendChild(itemRow);
+    });
+
+    document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', function () {
+            const foodId = this.getAttribute('data-food-id');
+            removeCartItem(foodId);
+        });
+    });
+
+    document.querySelectorAll('.item-quantity').forEach(input => {
+        input.addEventListener('change', function () {
+            updateItemTotal(this);
+        });
     });
 
     updateTotalPrice(cart);
+}
+
+function removeCartItem(foodId) {
+    fetch('/remove_from_cart', {
+        method: 'POST',
+        body: new URLSearchParams({ food_id: foodId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateCartDisplay(data.cart);
+    })
+    .catch(error => console.error('Error removing item:', error));
 }
 
 function updateTotalPrice(cart) {
@@ -79,11 +106,8 @@ function updateItemTotal(inputElement) {
     const totalPrice = quantity * price;
     totalCell.textContent = `$${totalPrice.toFixed(2)}`;
 
-    updateTotalPrice();
-
     const foodId = inputElement.getAttribute('data-food-id');
 
-    // Send the updated quantity to the server
     updateCartOnServer(foodId, quantity);
 }
 
@@ -160,11 +184,6 @@ function closeLoginModal() {
 function toggleDropdown(button) {
     const dropdownContent = button.nextElementSibling;
     if (dropdownContent && dropdownContent.classList.contains('w3-dropdown-content')) {
-        console.log("Dropdown content found");
         dropdownContent.classList.toggle('w3-show');
     }
-    else {
-        console.log("No dropdown content found");
-    }
-    console.log("Dropdown toggled");
 }

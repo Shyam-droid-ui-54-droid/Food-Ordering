@@ -167,18 +167,44 @@ nav.w3-bar .w3-bar-item {
     left: 50%;
 }
 
-#cart-items {
+/* This div handles scrolling and the overall look */
+.cart-items-wrapper {
     position: relative;
     top: 30px;
     margin-top: 4vh;
-    width: 80%;
-    padding: 10px;
+    width: 90%;
     border-radius: 10px;
     background-color: white;
-    height: 50vh;
     max-height: 50vh;
-    font-size: 0.8em;
     overflow-y: auto;
+    font-size: 0.8em;
+    display:flex;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1); 
+}
+
+/* The actual table now just fills the wrapper */
+#cart-items {
+   width: 100%;
+   border-collapse: collapse;
+   background-color: white;
+   margin: 0;
+}
+
+/* Table header sticks to the top */
+#cart-items thead th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid #c6c6c6;
+}
+
+/* Table cells */
+#cart-items td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
 }
 
 #cart-items .item-quantity {
