@@ -259,6 +259,7 @@ nav.w3-bar .w3-bar-item {
     white-space: nowrap;
     margin-top: 20px;
     z-index: 1002;
+    cursor:pointer;
     /* Remove left: 50% and transform */
 }
 
@@ -276,6 +277,53 @@ nav.w3-bar .w3-bar-item {
     background-color: red;
     color: white;
 }
+
+#pickup-location,
+#delivery-address {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #333;
+  max-width: 90%;
+  box-sizing: border-box;
+}
+
+#payment-information {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; 
+  margin-top: 12px;
+  margin:left 12px;
+  margin:right 12px;
+}
+
+#payment-information > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 30%; 
+  min-width: 160px; 
+}
+
+#payment-information label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+#payment-information input {
+  padding: 4px 6px;
+  text-align:center;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 
 .checkout-button {
     display: flex;
