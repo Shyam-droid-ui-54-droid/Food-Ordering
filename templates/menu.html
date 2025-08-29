@@ -63,24 +63,48 @@
             </tbody>
             <tfoot style="border-top: 2px solid black;">
                 <td></td>
-                <td>Total:</td>
+                <td>Order:</td>
                 <td id="total-price">%0.00</td>
 
             </tfoot>
         </table>
     </div>
 
-        <!-- Total Price -->
-        <div class="total-price">
-            <span>Total:</span>
-            <span id="total-price">${{ total_price }}</span>
-        </div>
+
 
         <div class="order-type-selector">
             <button id="pickup-button" class="order-selector-button">Pick-up</button>
             <button id="delivery-button" class="order-selector-button">Delivery</button>
         </div>
 
+        <div id="pickup-location">
+            <label for="location-select">Choose a pickup location below</label>
+            <select id="location-select" name="location">
+                <option value="location1"> 123 Fake Street, Fake Building, New Zealand</option>
+                <option value="location1"> 231 Fake Avenue, Real Building, New Zealand</option>
+                <option value="location1"> 321 Real Road, False Building, New Zealand</option>
+            </select>
+        </div>
+
+        <div id="delivery-address">
+            <label for="address-input">Enter delivery address:</label>
+            <input type="text" id="address-input" name="address">
+        </div>
+
+        <div id="payment-information">
+            <div class="payment-number">
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" name="card-number" class="card-number">
+            </div>
+            <div class="payment-expiry">
+                <div><label for="expiry">Expiry Date MM/YY</label>
+                <input type="text" id="expiry" name="expiry" class="expiry">
+            </div>
+            <div class="payment-cvv">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" name="cvv" class="cvv">
+            </div>
+        </div>
         <button id="checkout-button" class="checkout-button">Checkout</button>
     </div>
 </aside>

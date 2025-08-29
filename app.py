@@ -107,6 +107,33 @@ def remove_from_cart():
     session['cart'] = cart
     return jsonify({'cart': cart})
 
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    data = request.get_json()
+    
+    cart = data.get('cart', [])
+    address = data.get('address')
+    pick_up = data.get('pick_up')
+    card_number = request.form.get('card_number')
+    expiry = request.form.get('expiry')
+    cvv = request.form.get('cvv')
+    
+
+    #pick-up / delivery here later
+    #cart data from session?
+
+    conn = sqlite3.connect('order')
+    c = conn.cursor()
+
+    c.execute('''
+              INSET INTO order (card_number, expiry, cvv)
+              VALUES (?, ?, ?)
+        ''',(card_number, expiry, cvv))
+
+    conn.commit()
+    conn.close
+
+    return redirect('/menu')
 
 # Route to add a new customer (for login, registration)
 @app.route("/login", methods=["GET", "POST"])
