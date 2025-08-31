@@ -1,5 +1,183 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h2>Rewards</h2>
+    <style>
+        .rewards-container {
+            width: 100%;
+            max-width: 80rem; /* Increased size */
+            background-color: white;
+            padding: 10rem; /* Increased padding */
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            margin: auto;
+        }
+
+        .rewards-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .progress-bar-container {
+            height: 3rem; /* Increased height */
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: visible; /* To show milestones */
+            margin-top: 5rem; /* Increased margin to create more space */
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .milestones {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0 0.5rem;
+        }
+
+        .milestone-point {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .milestone-circle {
+            width: 3rem; /* Increased size */
+            height: 3rem; /* Increased size */
+            background-color: #d1d5db; /* Default gray */
+            border: 3px solid white; /* Border to stand out from progress bar */
+            border-radius: 9999px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.5s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .milestone-circle-completed {
+            background-color: #22c55e; /* Green when completed */
+            transform: scale(1.1);
+        }
+
+        .milestone-text {
+            font-size: 1.25rem; /* Increased font size */
+            color: #4b5563;
+            margin-top: 4rem; /* Increased margin-top for more space */
+            font-weight: 500;
+        }
+        
+        .login-prompt-container {
+            padding: 10rem;
+            max-width: 80rem;
+            background-color: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            margin: auto;
+        }
+    </style>
+
+    {% if is_logged_in %}
+        <div class="rewards-container">
+            <h1 class="text-5xl font-bold text-gray-800 mb-10">Welcome, {{ customer_name }}!</h1>
+            <h2 class="text-3xl font-semibold text-gray-700 my-16">Your Rewards Progress</h2>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+                <!-- Visual Milestones -->
+                <div class="milestones">
+                    <div id="milestone100" class="milestone-point">
+                        <div class="milestone-circle">
+                            100
+                        </div>
+                        <p class="milestone-text">Free Fries</p>
+                    </div>
+                    <div id="milestone200" class="milestone-point">
+                        <div class="milestone-circle">
+                            200
+                        </div>
+                        <p class="milestone-text">Free Drink</p>
+                    </div>
+                    <div id="milestone300" class="milestone-point">
+                        <div class="milestone-circle">
+                            300
+                        </div>
+                        <p class="milestone-text">Free Burger</p>
+                    </div>
+                    <div id="milestone400" class="milestone-point">
+                        <div class="milestone-circle">
+                            400
+                        </div>
+                        <p class="milestone-text">Free Dessert</p>
+                    </div>
+                    <div id="milestone500" class="milestone-point">
+                        <div class="milestone-circle">
+                            500
+                        </div>
+                        <p class="milestone-text">Free Meal</p>
+                    </div>
+                </div>
+            </div>
+            <p id="pointsText" class="text-xl font-medium text-gray-500 mb-20">{{ points | default(0) }} / 500 points</p>
+        </div>
+    {% else %}
+        <div class="login-prompt-container">
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">Log in to track your rewards!</h2>
+            <p class="text-xl text-gray-600">You must be logged in to view and save your rewards progress. Please log in or create an account to use this feature.</p>
+        </div>
+    {% endif %}
+
+    <script>
+        const progressBar = document.getElementById('progressBar');
+        const pointsText = document.getElementById('pointsText');
+        
+        // Define all milestone elements
+        const milestone100 = document.getElementById('milestone100').querySelector('.milestone-circle');
+        const milestone200 = document.getElementById('milestone200').querySelector('.milestone-circle');
+        const milestone300 = document.getElementById('milestone300').querySelector('.milestone-circle');
+        const milestone400 = document.getElementById('milestone400').querySelector('.milestone-circle');
+        const milestone500 = document.getElementById('milestone500').querySelector('.milestone-circle');
+        
+        const MAX_POINTS = 500;
+
+        if (progressBar && pointsText) {
+            let userPoints = parseInt("{{ points | default(0) }}");
+            const progressPercentage = Math.max(0, Math.min(100, (userPoints / MAX_POINTS) * 100));
+            
+            progressBar.style.width = progressPercentage + '%';
+            pointsText.textContent = `${userPoints} / ${MAX_POINTS} points`;
+
+            // Dynamically fill the milestones
+            if (userPoints >= 100) {
+                milestone100.classList.add('milestone-circle-completed');
+            }
+            if (userPoints >= 200) {
+                milestone200.classList.add('milestone-circle-completed');
+            }
+            if (userPoints >= 300) {
+                milestone300.classList.add('milestone-circle-completed');
+            }
+            if (userPoints >= 400) {
+                milestone400.classList.add('milestone-circle-completed');
+            }
+            if (userPoints >= 500) {
+                milestone500.classList.add('milestone-circle-completed');
+            }
+        }
+    </script>
 {% endblock %}
