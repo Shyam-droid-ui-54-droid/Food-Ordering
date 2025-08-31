@@ -1,25 +1,91 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div>
-    <h2>123 Fake Street, Fake Building, New Zealand</h2>
-    <div style="display: flex; align-items:flex-start;">
-        <img 
-        src = /static/images/assets/Location1.webp
-        style = 
-        ' 
-        display:inline-block;
-        max-width: 20vw;
-        height: auto;
-        border: 2px solid black;
-        border-radius: 8px;
-        display: block;
-        margin: 10px;
-        display: flex;
-        justify-content: left;'>
-        <p>aaa</p>
-    </div>
-    <h2 style="text-align:right;">231 Fake Avenue, Real Building, New Zealand</h2>
+    <style>
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+        }
 
-    <h2>321 Real Road, False Building, New Zealand</h2>
+        .location-container {
+            margin-bottom: 2rem;
+            max-width: 80vw;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Adds a line between the location containers */
+        .location-container:not(:first-child) {
+            border-top: 1px solid #ccc;
+            padding-top: 2rem;
+        }
+
+        .location-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .location-content {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .location-content.justify-right {
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .location-image {
+            width: 40vw;
+            height: 30vw;
+            object-fit: cover;
+            border: 2px solid black;
+            border-radius: 8px;
+            margin: 10px;
+        }
+
+        .location-text {
+            margin: 10px;
+            flex: 1;
+            font-size: 1.75rem;
+        }
+    </style>
+
+    <div class="main-container">
+        <div class="location-container">
+            <h2 class="location-header">123 Fake Street, Fake Building, New Zealand</h2>
+            <div class="location-content">
+                <img 
+                    src="/static/images/assets/Location1.webp" 
+                    class="location-image">
+                <p class="location-text">Our very first store, located on Fake Street, feels like home. Tucked away in the Fake Building, it's a cozy and inviting spot perfect for unwinding with a book or catching up with friends. This location is a true cornerstone of the community, where our friendly staff knows you by name and the atmosphere is always relaxed and welcoming.</p>
+            </div>
+        </div>
+
+        <div class="location-container justify-right">
+            <h2 class="location-header">231 Fake Avenue, Real Building, New Zealand</h2>
+            <div class="location-content justify-right">
+                <img 
+                    src="/static/images/assets/Location2.webp" 
+                    class="location-image">
+                <p class="location-text">Step into a vibrant atmosphere at our Real Building location. Located on the bustling Fake Avenue, this spot combines urban energy with a sleek, contemporary design. It’s the perfect place to grab a quick coffee before work or meet up for a lunch break. The unique architecture and lively street presence make it an easy and exciting stop in your daily routine.</p>
+            </div>
+        </div>
+
+        <div class="location-container">
+            <h2 class="location-header">321 Real Road, False Building, New Zealand</h2>
+            <div class="location-content">
+                <img 
+                    src="/static/images/assets/Location3.webp" 
+                    class="location-image">
+                <p class="location-text">A little gem on a major road, our False Building location is a peaceful retreat from the city. The charming, rustic exterior gives way to a surprisingly modern and comfortable interior. Whether you're looking for a quiet place to work or a comfortable spot to simply relax, this location offers a calm and comfortable experience with the same great service you expect from us.</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
