@@ -190,8 +190,8 @@ document.getElementById('checkout-button').addEventListener('click', () => {
   const orderData = {
     cart: cartData,
     order_type: orderType,
-    delivery_address: deliveryAddress,
-    pickup_location: pickupLocation,
+    address: deliveryAddress,
+    pick_up: pickupLocation,
     card_number: cardNumber,
     expiry,
     cvv
@@ -204,6 +204,7 @@ document.getElementById('checkout-button').addEventListener('click', () => {
   })
   .then(response => response.json())
   .then(data => {
+    console.log('Server response:', data);
     if (data.success) {
       alert('Order placed successfully!');
       

@@ -1,7 +1,9 @@
-from flask import Flask, g, request, redirect, render_template, session, url_for, flash, make_response, abort, jsonify
+from flask import Flask, g, request, redirect, render_template, session, url_for, flash, abort, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import re
+import json
+import uuid
 
 DATABASE = 'database.db'
 
@@ -18,7 +20,7 @@ def get_db():
     return db
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(_):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
@@ -111,29 +113,70 @@ def remove_from_cart():
 def checkout():
     data = request.get_json()
     
-    cart = data.get('cart', [])
+    cart = session.get('cart', [])
+    
+    if not cart:
+        return jsonify({'success': False, 'message': 'Please add items to your order'})
+
+    total_price = sum(item['total_price'] for item in cart)
+    
     address = data.get('address')
     pick_up = data.get('pick_up')
-    card_number = request.form.get('card_number')
-    expiry = request.form.get('expiry')
-    cvv = request.form.get('cvv')
+    card_number = data.get('card_number')
+    expiry = data.get('expiry')
+    cvv = data.get('cvv')
+    customer_id = session.get('user_id')
+    if not customer_id:
+        customer_id = session.get('temp_id')
+        if not customer_id:
+            customer_id = str(uuid.uuid4())
+            session['guest_id'] = customer_id
+
     
 
     #pick-up / delivery here later
     #cart data from session?
 
-    conn = sqlite3.connect('order')
-    c = conn.cursor()
 
-    c.execute('''
-              INSET INTO order (card_number, expiry, cvv)
-              VALUES (?, ?, ?)
-        ''',(card_number, expiry, cvv))
+    if not (card_number and expiry and cvv):
+        return jsonify({'success': False, 'message': 'Please fill in all card details'})
+    
+    if not (address or pick_up):
+        return jsonify ({'success': False, 'message': 'Please fill in pick-up or delivery'})
 
-    conn.commit()
-    conn.close
+    if address == '':
+        address = None
 
-    return redirect('/menu')
+    if pick_up == '':
+        pick_up = None
+
+    try:
+        conn = get_db()
+        c = conn.cursor()
+
+        cart_json = json.dumps(cart)
+
+        c.execute('''
+                INSERT INTO "Order" (customer_id, cart, address, pick_up, card_number, expiry, cvv, total_price)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''',(customer_id, cart_json, address, pick_up, card_number, expiry, cvv, total_price))
+        
+        order_id = c.lastrowid
+
+        for item in cart:
+            c.execute('''
+                    INSERT INTO Order_items (order_id, food_id, quantity, price)
+                    VALUES (?, ?, ?, ?)
+                    ''', (order_id, item['food_id'], item['quantity'], item['total_price']))
+
+        conn.commit()
+        # Do not close the connection here; Flask will handle it in teardown
+        session.pop('cart', None)
+        return jsonify ({'success': True, 'message': 'Order Successful'})
+
+    except Exception as e:
+        print(f"Server error during checkout: {e}")
+        return jsonify ({'success': False, 'message': 'Server error'})
 
 # Route to add a new customer (for login, registration)
 @app.route("/login", methods=["GET", "POST"])
@@ -195,7 +238,7 @@ def locations():
     return render_template("locations.html")
 
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found(_error):
     return render_template('404.html'), 404
 
 @app.route('/example404')
@@ -203,7 +246,7 @@ def example404():
     abort(404)
 
 @app.errorhandler(505)
-def server_error(error):
+def server_error(_error):
     return render_template('505.html'), 505
 
 @app.route('/cause505')

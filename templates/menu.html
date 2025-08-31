@@ -80,9 +80,10 @@
         <div id="pickup-location">
             <label for="location-select">Choose a pickup location below</label>
             <select id="location-select" name="location">
-                <option value="location1"> 123 Fake Street, Fake Building, New Zealand</option>
-                <option value="location1"> 231 Fake Avenue, Real Building, New Zealand</option>
-                <option value="location1"> 321 Real Road, False Building, New Zealand</option>
+                <option value="" disabled selected>Select a location</option>
+                <option value="123 Fake Street"> 123 Fake Street, Fake Building, New Zealand</option>
+                <option value="231 Fake Avenue"> 231 Fake Avenue, Real Building, New Zealand</option>
+                <option value="321 Real Road"> 321 Real Road, False Building, New Zealand</option>
             </select>
         </div>
 
@@ -133,7 +134,7 @@ function updateCartDisplay(cart) {
         const itemRow = document.createElement('tr');
         itemRow.innerHTML = `
             <td>
-                <input type="number" class="item-quantity" value="${item.quantity}" min="1" data-item-id="${item.food_id}" onchange="updateItemTotal(this)">
+                <input type="number" id="item-quantity" class="item-quantity" value="${item.quantity}" min="1" data-item-id="${item.food_id}" onchange="updateItemTotal(this)">
             </td>
             <td>${item.food_name}</td>
             <td>$${item.food_price}</td>
@@ -219,7 +220,11 @@ function toggleCartSidebar() {
 
         isProcessing = false;
     });
+    
 }
+</script>
+<script id="cart-data" type="application/json">
+    {{ cart | tojson }}
 </script>
 
 {% endblock %}
