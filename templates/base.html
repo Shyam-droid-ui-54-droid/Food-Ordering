@@ -17,23 +17,21 @@
 
     
     <!-- Shared Navbar --> 
-     <nav class="w3-bar w3-light-grey">
+    <nav class="w3-bar w3-light-grey nav-bar">
         <a href="{{ url_for('menu')}}" class="w3-bar-item w3-button">Menu</a>
         <a href="{{ url_for('rewards')}}" class="w3-bar-item w3-button">Rewards</a>
         <a href="{{ url_for('locations')}}" class="w3-bar-item w3-button">Locations</a>
-        
-           {% if 'customer_id' in session %}
-           <div class="w3-dropdown-click w3-container w3-right">
-                <button class="w3-bar-item w3-button" onclick="toggleDropdown(this)">
-                   &#x25CB {{session['name'] }} <i class=" fa fa-caret-down"></i>
+        {% if 'customer_id' in session %}
+            <div class="dropdown-container w3-right">
+                <button class="w3-bar-item w3-button username-display" id="username" onclick="toggleDropdown('logoutDropdownContent')">
+                    &#x25CB; {{ session['name'] }} <i class="fa fa-caret-down"></i>
                 </button>
-                <div class="w3-dropdown-content" style="display: none; z-index: 1000;">
-                    <a href="{{url_for('logout') }}" class="w3-bar-item w3-button logout-button">Logout</a>
+                <div id="logoutDropdownContent" class="logout-dropdown">
+                    <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button logout-button">Logout</a>
                 </div>
             </div>
-        
         {% else %}
-            <button id="open-login-btn" class="w3-bar-item w3-button">Login</button>
+            <button id="open-login-btn" class="w3-bar-item w3-button w3-right">Login</button>
         {% endif %}
     </nav>
     
@@ -71,6 +69,10 @@
     <br>           321 Real Road, False Building, New Zealand
     </p>
     </footer>
+
+    <script>
+        const logoutUrl = "{{ url_for('logout') }}"
+    </script>
     <script src="{{ url_for('static', filename='javascript.js') }}"></script>
 </body>
 </html>

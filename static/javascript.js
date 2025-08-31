@@ -1,14 +1,35 @@
-// Toggle the username dropdown menu
-function toggleDropdown(button) {
-    const dropdownContent = button.nextElementSibling;
-    if (dropdownContent && dropdownContent.classList.contains('w3-dropdown-content')) {
-        if (dropdownContent.style.display === 'block') {
-            dropdownContent.style.display = 'none';
-        } else {
-            dropdownContent.style.display = 'block';
-        }
-    }
+function updateDropdownPosition() {
+  const dropdownContent = document.getElementById('logoutDropdownContent');
+  const trigger = document.getElementById('username');
+  if (!dropdownContent || !trigger) return;
+  
+  if (!dropdownContent.classList.contains('show-dropdown')) return; // only update if visible
+
+  const rect = trigger.getBoundingClientRect();
+
+  dropdownContent.style.top = `${rect.bottom}px`;
+  dropdownContent.style.left = `${rect.left}px`;
+  dropdownContent.style.right = 'auto';  
 }
+
+function toggleDropdown(dropdownId) {
+  const dropdownContent = document.getElementById(dropdownId);
+  const trigger = document.getElementById('username');
+  if (!dropdownContent || !trigger) return;
+
+  if (dropdownContent.classList.contains('show-dropdown')) {
+    dropdownContent.classList.remove('show-dropdown');
+  } else {
+    dropdownContent.classList.add('show-dropdown');
+    updateDropdownPosition();
+  }
+}
+
+// Update position on scroll and resize
+window.addEventListener('scroll', updateDropdownPosition);
+window.addEventListener('resize', updateDropdownPosition);
+
+
 
 // Cart position update with debounce
 let debounceTimer;

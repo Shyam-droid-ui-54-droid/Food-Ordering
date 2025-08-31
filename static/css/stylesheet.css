@@ -38,7 +38,7 @@ nav.w3-bar {
     gap: 8vw;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
 nav.w3-bar .w3-bar-item {
@@ -49,17 +49,54 @@ nav.w3-bar .w3-bar-item {
     text-align: center;
 }
 
-/* Fix for dropdown positioning */
-.w3-dropdown-click {
+.w3-bar {
+    align-items: center; 
+}
+/* Make sure dropdown-container is relatively positioned and on top */
+.dropdown-container {
     position: relative;
+    z-index: 1050; /* very high */
+    overflow: visible !important; /* to prevent clipping */
 }
 
-.w3-dropdown-content {
-    position: absolute;
-    right: 0; /* Align to the right of the button */
-    top: 100%; /* Position below the button */
-    z-index: 1000222;
+/* Dropdown itself */
+.logout-dropdown {
+  position: fixed;
+  display: none;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  min-width: 100px;
+  overflow: visible !important;
+  z-index: 1051;
+  font-size: 1vw;
+  padding: 0; 
 }
+
+.logout-dropdown.show-dropdown {
+  display: block;
+}
+
+.logout-button {
+  display: block;
+  width: 100%;
+  padding: 1vw 3vw;   /* match nav bar padding */
+  text-align: center;
+  color: black;
+  text-decoration: none;
+  font-size: 1vw;     
+  line-height: 1.5;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.logout-button:hover {
+  background-color: #f0f0f0;
+}
+
 
 /* Footer Styling */
 .footer {
@@ -72,6 +109,10 @@ nav.w3-bar .w3-bar-item {
 
 /* Menu Styling for food item grid */
 .menu-page {
+    position: relative;
+    z-index: 1;
+
+
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -153,10 +194,10 @@ nav.w3-bar .w3-bar-item {
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
-    z-index: 1000;
+    z-index: 99; 
     margin-left: auto;
     top: var(--cart-top, 60px);
-    transform: translateX(100%)
+    transform: translateX(100%);
 }
 
 .cart-container.open {
