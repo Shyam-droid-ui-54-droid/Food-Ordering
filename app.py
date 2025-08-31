@@ -52,6 +52,38 @@ def menu():
     results = query_db(sql)
     return render_template("menu.html", foods=results, cart=cart, total_price=total_price)
 
+from flask import jsonify
+
+@app.route("/food/<int:food_id>")
+def food(food_id):
+    sql = """
+        SELECT f.food_name, n.* FROM food_nutrition n
+        JOIN Food f ON f.food_id = n.food_id
+        WHERE f.food_id = ?
+    """
+    result = query_db(sql, (food_id,), one=True)  # one=True since only one food item
+
+    if not result:
+        return jsonify({"error": "Food nutrition not found"}), 404
+    
+    def convert_allergens(nutrition_dict):
+        allergens = ['milk', 'eggs', 'fish', 'crustacean_shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soy']
+        for allergen in allergens:
+            if allergen in nutrition_dict:
+                nutrition_dict[allergen] = ("Contains " + allergen.replace('_', ' ') 
+                                           if nutrition_dict[allergen] == 1 else 
+                                           "No " + allergen.replace('_', ' '))
+        return nutrition_dict
+
+    result_dict = dict(result)
+    result_dict = convert_allergens(result_dict)
+
+    # Optionally remove food_id before returning
+    result_dict.pop('food_id', None)
+
+    return jsonify(result_dict)
+
+
 # Route to add an item to the cart
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -90,6 +122,8 @@ def add_to_cart():
             'quantity': 1,
             'total_price': float(food_price)
         })
+
+    
 
     # Save updated cart to session
     session['cart'] = cart
@@ -213,6 +247,14 @@ def checkout():
                 INSERT INTO Order_items (order_id, food_id, quantity, price)
                 VALUES (?, ?, ?, ?)
                 ''', (order_id, item['food_id'], item['quantity'], item['total_price']))
+            
+        if session.get('customer_id'):
+         points_add = total_price * 0.10
+         c.execute('''
+             UPDATE Customer
+             SET points = points + ?
+                WHERE customer_id = ?
+         ''', (points_add, customer_id))
 
         conn.commit()
         
@@ -333,3 +375,4 @@ def cause_505():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
