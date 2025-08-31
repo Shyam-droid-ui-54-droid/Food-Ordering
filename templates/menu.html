@@ -10,8 +10,8 @@
                     alt="{{ food.food_name }}" 
                     class="food-image"
                     loading="lazy"
-                    srcset=" {{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w">
-                <div class="food-text">    
+                    srcset="{{ url_for('static', filename=food.imageurl or 'images/default-food.webp') }} 320w">
+                <div class="food-text">    
                     <span class="food-name">{{ food.food_name }}</span>
                     <span class="food-price">${{ food.food_price }}</span> 
                 </div>
@@ -27,50 +27,47 @@
 </div>
 
 <!-- Cart Sidebar -->
-<aside id="cart-container" class="cart-container">
+<aside id="cart-container" class="cart-container open">
     <button id="cart-button" class="cart-button" onclick="toggleCartSidebar()">&#8647;</button>
 
     <div id="cart-sidebar" class="cart-sidebar">
         <h3>Your Order</h3>
 
         <!-- Cart Items Table -->
-       <div class="cart-items-wrapper">
-        <table id="cart-items">
-            <thead>
-                <tr>
-                    <th>Quantity</th>
-                    <th>Item</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart %}
+        <div class="cart-items-wrapper">
+            <table id="cart-items">
+                <thead>
                     <tr>
-                        <td>
-                            <input type="number" class="item-quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.food_id }}" onchange="updateItemTotal(this)" disabled>
-                        </td>
-                        <td>{{ item.food_name }}</td>
-                        <td>${{ item.food_price }}</td>
-                        <td class="item-total">${{ item.total_price }}</td>
+                        <th>Quantity</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th></th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">No items in cart.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot style="border-top: 2px solid black;">
-                <td></td>
-                <td>Order:</td>
-                <td id="total-price">%0.00</td>
-
-            </tfoot>
-        </table>
-    </div>
-
-
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>
+                                <input type="number" id="item-quantity" class="item-quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.food_id }}" onchange="updateItemTotal(this)" disabled>
+                            </td>
+                            <td>{{ item.food_name }}</td>
+                            <td>${{ item.food_price }}</td>
+                            <td class="item-total">${{ item.total_price }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No items in cart.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot style="border-top: 2px solid black;">
+                    <td></td>
+                    <td>Order:</td>
+                    <td id="total-price">%0.00</td>
+                </tfoot>
+            </table>
+        </div>
 
         <div class="order-type-selector">
             <button id="pickup-button" class="order-selector-button">Pick-up</button>
@@ -81,9 +78,9 @@
             <label for="location-select">Choose a pickup location below</label>
             <select id="location-select" name="location">
                 <option value="" disabled selected>Select a location</option>
-                <option value="123 Fake Street"> 123 Fake Street, Fake Building, New Zealand</option>
-                <option value="231 Fake Avenue"> 231 Fake Avenue, Real Building, New Zealand</option>
-                <option value="321 Real Road"> 321 Real Road, False Building, New Zealand</option>
+                <option value="123 Fake Street">123 Fake Street, Fake Building, New Zealand</option>
+                <option value="231 Fake Avenue">231 Fake Avenue, Real Building, New Zealand</option>
+                <option value="321 Real Road">321 Real Road, False Building, New Zealand</option>
             </select>
         </div>
 
@@ -98,7 +95,7 @@
                 <input type="text" id="card-number" name="card-number" class="card-number">
             </div>
             <div class="payment-expiry">
-                <div><label for="expiry">Expiry Date MM/YY</label>
+                <label for="expiry">Expiry Date MM/YY</label>
                 <input type="text" id="expiry" name="expiry" class="expiry">
             </div>
             <div class="payment-cvv">
@@ -106,6 +103,7 @@
                 <input type="text" id="cvv" name="cvv" class="cvv">
             </div>
         </div>
+
         <button id="checkout-button" class="checkout-button">Checkout</button>
     </div>
 </aside>
@@ -120,15 +118,75 @@ let isProcessing = false;
 
 // Set initial state when the page loads
 window.addEventListener('DOMContentLoaded', () => {
+    const foodGrid = document.querySelector('.food-grid');
+    foodGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('.cart-add');
+        if (button) {
+            const foodId = button.dataset.food_id;
+            const foodName = button.dataset.food_name;
+            const foodPrice = button.dataset.food_price;
+            addToCart(foodId, foodName, foodPrice);
+        }
+    });
+
     const cartData = JSON.parse(document.getElementById('cart-data').textContent); // Get cart data
     updateCartDisplay(cartData); // Update the cart display based on session data
     updateTotalPrice(cartData); // Update total price on page load
+
+    initializeCartSidebarState(); // Init sidebar state on load
 });
 
-// Update the cart display based on cart data
+function initializeCartSidebarState() {
+    const sidebar = document.getElementById('cart-container');
+    const cartButton = document.getElementById('cart-button');
+    const foodItems = document.querySelectorAll('.food-item');
+    const menuPage = document.querySelector('.menu-page');
+
+    const isOpen = sidebar.classList.contains('open');
+    cartButton.innerHTML = isOpen ? '&#8649;' : '&#8647;';
+    
+    if (isOpen) {
+        menuPage.classList.remove('shrink');
+        sidebar.style.transform = 'translateX(0)'; // Reveal the sidebar
+        foodItems.forEach(item => item.style.transform = 'scale(1)');
+    } else {
+        menuPage.classList.add('shrink');
+        sidebar.style.transform = 'translateX(100%)'; // Hide the sidebar
+        foodItems.forEach(item => item.style.transform = 'scale(0.9)');
+    }
+}
+
+function toggleCartSidebar() {
+    if (isProcessing) return;
+    isProcessing = true;
+
+    requestAnimationFrame(() => {
+        const sidebar = document.getElementById('cart-container');
+        const cartButton = document.getElementById('cart-button');
+        const foodItems = document.querySelectorAll('.food-item');
+        const menuPage = document.querySelector('.menu-page');
+
+        const isNowOpen = sidebar.classList.toggle('open');
+        cartButton.innerHTML = isNowOpen ? '&#8649;' : '&#8647;';
+
+        if (isNowOpen) {
+            menuPage.classList.remove('shrink');
+            sidebar.style.transform = 'translateX(0)'; // Reveal the sidebar
+            foodItems.forEach(item => item.style.transform = 'scale(1)');
+        } else {
+            menuPage.classList.add('shrink');
+            sidebar.style.transform = 'translateX(100%)'; // Hide the sidebar
+            foodItems.forEach(item => item.style.transform = 'scale(0.9)');
+        }
+
+        isProcessing = false;
+    });
+}
+
+// Cart functions
 function updateCartDisplay(cart) {
     const cartContainer = document.getElementById('cart-items');
-    cartContainer.innerHTML = ''; // Clear existing items
+    cartContainer.innerHTML = '';
 
     cart.forEach(item => {
         const itemRow = document.createElement('tr');
@@ -144,24 +202,21 @@ function updateCartDisplay(cart) {
     });
 }
 
-// Update the total price displayed in the cart
 function updateTotalPrice(cart) {
     let totalPrice = 0;
     cart.forEach(item => totalPrice += item.total_price);
     document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
 }
 
-// When quantity changes, update the total and backend (session)
 function updateItemTotal(inputElement) {
     const quantity = parseInt(inputElement.value, 10);
     const row = inputElement.closest('tr');
     const price = parseFloat(row.cells[2].textContent.replace('$', ''));
     const totalPriceCell = row.querySelector('.item-total');
-    
+
     const totalPrice = quantity * price;
     totalPriceCell.textContent = `$${totalPrice.toFixed(2)}`;
 
-    // Update total price on the page
     const cartData = JSON.parse(document.getElementById('cart-data').textContent);
     cartData.forEach(item => {
         if (item.food_id == inputElement.dataset.itemId) {
@@ -170,11 +225,10 @@ function updateItemTotal(inputElement) {
         }
     });
 
-    updateTotalPrice(cartData); // Recalculate and update the total price in the cart
-    updateCartSession(cartData); // Send updated cart data back to session
+    updateTotalPrice(cartData);
+    updateCartSession(cartData);
 }
 
-// Function to update the cart in the backend (session)
 function updateCartSession(cartData) {
     fetch('/update_cart', {
         method: 'POST',
@@ -185,46 +239,10 @@ function updateCartSession(cartData) {
     })
     .then(response => response.json())
     .then(updatedCart => {
-        // Update session cart after update
         document.getElementById('cart-data').textContent = JSON.stringify(updatedCart.cart);
     })
     .catch(error => console.error('Error updating cart:', error));
 }
-
-// Toggle the cart sidebar
-function toggleCartSidebar() {
-    if (isProcessing) return; // Prevent multiple rapid clicks
-    isProcessing = true;
-
-    requestAnimationFrame(() => {
-        const sidebar = document.getElementById('cart-container');
-        const cartButton = document.getElementById('cart-button');
-        const foodItems = document.querySelectorAll('.food-item');
-        const menuPage = document.querySelector('.menu-page');
-        const isOpen = sidebar.classList.contains('open');
-        
-        // Toggle sidebar and update button icon
-        sidebar.classList.toggle('open');
-        cartButton.innerHTML = isOpen ? '&#8647;' : '&#8649;'; // Toggle the cart button 
-        
-        // Apply scaling and padding adjustments
-        if (isOpen) {
-            sidebar.style.transform = 'translateX(100%)'; // Hide the sidebar
-            menuPage.classList.add('shrink');
-            foodItems.forEach(item => item.style.transform = 'scale(1)'); // Return food items to original size
-        } else {
-            sidebar.style.transform = 'translateX(0)'; // Show the sidebar
-            menuPage.classList.remove('shrink');
-            foodItems.forEach(item => item.style.transform = 'scale(0.9)'); // Shrink food items
-        }
-
-        isProcessing = false;
-    });
-    
-}
-</script>
-<script id="cart-data" type="application/json">
-    {{ cart | tojson }}
 </script>
 
 {% endblock %}

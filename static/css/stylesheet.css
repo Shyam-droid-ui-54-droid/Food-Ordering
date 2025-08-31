@@ -36,7 +36,7 @@ nav.w3-bar {
     display: flex;
     justify-content: center;
     gap: 8vw;
-    position: sticky; 
+    position: sticky;
     top: 0;
     z-index: 1000;
 }
@@ -47,6 +47,18 @@ nav.w3-bar .w3-bar-item {
     display: inline-block;
     line-height: 1.5;
     text-align: center;
+}
+
+/* Fix for dropdown positioning */
+.w3-dropdown-click {
+    position: relative;
+}
+
+.w3-dropdown-content {
+    position: absolute;
+    right: 0; /* Align to the right of the button */
+    top: 100%; /* Position below the button */
+    z-index: 1000;
 }
 
 /* Footer Styling */
@@ -87,7 +99,6 @@ nav.w3-bar .w3-bar-item {
 
 /* Food item styling */
 .menu-page .food-item {
-    transform:scale(0.9);
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -97,8 +108,14 @@ nav.w3-bar .w3-bar-item {
     border-color: black;
     border-style: solid;
     border-width: 2px;
-    width: 90%; /* Reduce width */
+    width: 90%;
     transition: transform 0.3s ease, width 0.3s ease;
+    transform: scale(1); /* Start at full size */
+}
+
+/* Apply scale shrink only when menu-page has .shrink */
+.menu-page.shrink .food-item {
+    transform: scale(0.9);
 }
 
 .menu-page .food-image {
@@ -132,19 +149,21 @@ nav.w3-bar .w3-bar-item {
     position: fixed;
     right: 0;
     width: 22%;
-    height: calc(100vh - var(--cart-top)); /* Adjust height based on the dynamic navbar height */
+    height: calc(100vh - var(--cart-top));
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
     z-index: 1000;
     margin-left: auto;
-    top: var(--cart-top, 60px); /* Default to 60px if --cart-top is not set */
+    top: var(--cart-top, 60px);
+    transform: translateX(100%)
 }
 
 .cart-container.open {
-    transform: translateX(0); /* Slide in the sidebar */
+    transform: translateX(0);
 }
 
+/* The primary fix is here, using a flexbox layout for predictable flow */
 .cart-sidebar {
     will-change: transform;
     position: relative;
@@ -157,29 +176,30 @@ nav.w3-bar .w3-bar-item {
     overflow-y: auto;
     flex-grow: 1;
     height: 100%;
+    padding: 20px; /* Add padding to contain all elements */
 }
 
+/* Remove absolute positioning so the header flows with the content */
 .cart-sidebar h3 {
-    position: absolute;
-    top: 20px;
-    transform: translateX(-50%);
-    margin: 0;
-    left: 50%;
+    position: static;
+    transform: none;
+    margin: 0 0 20px 0;
+    left: auto;
 }
 
 /* This div handles scrolling and the overall look */
 .cart-items-wrapper {
     position: relative;
-    top: 30px;
-    margin-top: 4vh;
-    width: 90%;
+    top: auto; /* Removed fixed positioning to allow it to flow */
+    margin-top: 0;
+    width: 100%; /* Changed from 90% for better fill */
     border-radius: 10px;
     background-color: white;
     max-height: 50vh;
     overflow-y: auto;
     font-size: 0.8em;
-    display:flex;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1); 
+    display: flex;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
 /* The actual table now just fills the wrapper */
@@ -210,8 +230,8 @@ nav.w3-bar .w3-bar-item {
 #cart-items .item-quantity {
     cursor: not-allowed;
     width: 2vw;
-    -webkit-appearance: none; /* For Chrome and Safari */
-    appearance: none; /* For other browsers */
+    -webkit-appearance: none;
+    appearance: none;
     margin: 0;
     pointer-events: none;
 }
@@ -227,13 +247,11 @@ nav.w3-bar .w3-bar-item {
     margin: 0;
 }
 
-
-
-
+/* Updated cart button positioning to be more reliable */
 #cart-button {
     position: absolute;
     top: 50%;
-    left: -8%;
+    left: -2.5rem;
     background-color: #7d7878;
     border: none;
     padding: 0.4em 0.8em;
@@ -260,7 +278,6 @@ nav.w3-bar .w3-bar-item {
     margin-top: 20px;
     z-index: 1002;
     cursor:pointer;
-    /* Remove left: 50% and transform */
 }
 
 .order-selector-button {
@@ -293,18 +310,17 @@ nav.w3-bar .w3-bar-item {
 
 #payment-information {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px; 
+  flex-direction: column;
+  gap: 15px;
   margin-top: 12px;
-  margin:left 12px;
-  margin:right 12px;
+  margin-left: 12px;
+  margin-right: 12px;
+  width: 80%;
 }
 
 #payment-information > div {
   display: flex;
   flex-direction: column;
-  flex: 1 1 30%; 
-  min-width: 160px; 
 }
 
 #payment-information label {
@@ -315,13 +331,14 @@ nav.w3-bar .w3-bar-item {
 
 #payment-information input {
   padding: 4px 6px;
-  text-align:center;
+  text-align: center;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
 }
 
 
@@ -329,14 +346,15 @@ nav.w3-bar .w3-bar-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1.8rem;
     background-color: lightslategray;
-    padding: 10px;
+    padding: 22px 30px;
     border-radius: 20px;
-    width: fit-content;
+    width: 100%;
     white-space: nowrap;
     margin-top: 40px;
     z-index: 1002;
+    cursor: pointer;
 }
 
 /* Media Queries for Phones */
@@ -388,6 +406,14 @@ nav.w3-bar .w3-bar-item {
         flex-shrink: 0;
         display: block;
         margin-top: auto;
+    }
+
+    /* Adjustments for cart on small screens */
+    .cart-container {
+        width: 80%; /* Make the cart wider on mobile for better usability */
+        height: 100vh;
+        top: 0;
+        margin-top: 0;
     }
 }
 

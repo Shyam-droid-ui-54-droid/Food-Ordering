@@ -33,35 +33,26 @@
             </div>
         
         {% else %}
-            <button class="w3-bar-item w3-button" onclick="openLoginModal()">Login</button>
+            <button id="open-login-btn" class="w3-bar-item w3-button">Login</button
         {% endif %}
-    </nav>
-
-</div>
     </nav>
     
     <!-- Login Contents -->
-     <div id="login-modal" class="w3-modal" style="z-index: 10000">
-        <div class="w3-modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <h2>Login</h2>
-            <form method="POST" action="{{ url_for('login') }}">
-                <p>Name</p>
-                <input class ="w3-input w3-border" type="text" name="name" required> 
-                <p>Email</p>
-                <input class ="w3-input w3-border" type="email" name="email" required>
-                <p>Password</p>
-                <input class ="w3-input w3-border" type="password" name="password" required>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <p class="w3-text-red">{{ messages[0] }}</p>
-                    {% endif %}
-                {% endwith %}
-                <button class="w3-button w3-teal w3-margin-top">Login</button>
-            </form>
-        </div>
-
-     </div>
+<div id="login-modal" class="w3-modal" style="z-index: 10000">
+    <div class="w3-modal-content">
+        <span id="close-login-modal-btn" class="close">&times;</span>
+        <h2>Login</h2>
+        <form id="login-form" method="POST" action="{{ url_for('login') }}">
+            <p>Name</p>
+            <input class="w3-input w3-border" type="text" name="name" required>
+            <p>Email</p>
+            <input class="w3-input w3-border" type="email" name="email" required>
+            <p>Password</p>
+            <input class="w3-input w3-border" type="password" name="password" required>
+            <button class="w3-button w3-teal w3-margin-top">Login</button>
+        </form>
+    </div>
+</div>
 
     <main> 
     {% block body %}
@@ -80,6 +71,6 @@
     <br>           321 Real Road, False Building, New Zealand
     </p>
     </footer>
-    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+    **<script src="{{ url_for('static', filename='javascript.js') }}"></script>**
 </body>
 </html>
