@@ -121,7 +121,6 @@ function showNutritionModal(data) {
       let displayKey = key.replace(/_/g, ' ');
       displayKey = displayKey.replace(/\b\w/g, c => c.toUpperCase());
 
-
       keyCell.textContent = displayKey;
       valueCell.textContent = nutritionData[key];
       row.appendChild(keyCell);
@@ -186,58 +185,59 @@ if (freeFromList.length) {
   modal.style.display = 'block';
 }
 
-async function checkout() {
+function checkout() {
   const cartDataElement = document.getElementById('cart-data');
-  const checkoutButton = document.getElementById('checkout-button');
-  
-  if (!cartDataElement || !checkoutButton) return;
+  if (!cartDataElement) return;
 
-  let cart;
-  try {
-    cart = JSON.parse(cartDataElement.textContent);
-  } catch {
-    alert('Cart data is corrupted. Please refresh the page.');
-    return;
-  }
-
-  if (!Array.isArray(cart) || cart.length === 0) {
+  const cart = JSON.parse(cartDataElement.textContent);
+  if (cart.length === 0) {
     alert('Your cart is empty!');
     return;
   }
 
-  // Disable button to prevent multiple submissions
-  checkoutButton.disabled = true;
-  checkoutButton.textContent = 'Processing...';
+  const orderType = document.getElementById('pickup-button').classList.contains('selected') ? 'pickup' :
+      document.getElementById('delivery-button').classList.contains('selected') ? 'delivery' : null;
 
-  try {
-    const response = await fetch('/checkout', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ cart }),
-    });
+  const deliveryAddress = document.getElementById('address-input').value;
+  const pickupLocation = document.getElementById('location-select').value;
+  const cardNumber = document.getElementById('card-number').value;
+  const expiry = document.getElementById('expiry').value;
+  const cvv = document.getElementById('cvv').value;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || 'Checkout failed');
+  const orderData = {
+      cart: cart,
+      order_type: orderType,
+      address: deliveryAddress,
+      pick_up: pickupLocation,
+      card_number: cardNumber,
+      expiry,
+      cvv
+  };
+
+  fetch('/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData),
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Checkout failed');
+    return res.json();
+  })
+  .then(data => {
+    if (data.success) {
+      alert('Checkout successful! Order ID: ' + data.orderId);
+      // clear cart after checkout if needed:
+      updateCartDisplay([]);
+      updateTotalPrice([]);
+      updateCartDataElement([]);
+    } else {
+      alert('There was a problem placing your order: ' + (data.message || 'Unknown error.'));
     }
+  })
+  .catch(err => alert('Error during checkout: ' + err.message));
 
-    const data = await response.json();
-    alert('Checkout successful! Order ID: ' + data.orderId);
 
-    // Clear cart after successful checkout
-    updateCartDisplay([]);
-    updateTotalPrice([]);
-    updateCartDataElement([]);
-  } catch (err) {
-    alert('Error during checkout: ' + err.message);
-  } finally {
-    checkoutButton.disabled = false;
-    checkoutButton.textContent = 'Checkout';
-  }
 }
-
-
-
 
 
 
@@ -473,6 +473,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // DOM Listener for checkout
+  const checkoutButton = document.getElementById('checkout-button');
+  if (checkoutButton) {
+    checkoutButton.addEventListener('click', checkout);
+  }
+
+
   // Scroll and resize update dropdown and cart positions
   window.addEventListener('scroll', () => {
     updateDropdownPosition();
@@ -493,12 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
       addToCart(foodId, foodName, foodPrice);
     }
   });
-
-  // Add checkout button click handler
-  const checkoutButton = document.getElementById('checkout-button');
-  if (checkoutButton) {
-    checkoutButton.addEventListener('click', checkout);
-  }
 
   // Pickup and delivery button toggle handlers
   const pickupButton = document.getElementById('pickup-button');

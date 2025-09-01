@@ -165,25 +165,12 @@ def remove_from_cart():
 
 @app.route('/checkout', methods=['POST'])
 def checkout():
-    # Log the incoming JSON data for debugging
-    print("--- New Checkout Request Received ---")
-    
-    if not request.is_json:
-        print("Error: Request is not JSON. Aborting.")
-        return jsonify({'success': False, 'message': 'Request must be JSON'}), 400
-        
+    print("checkout called")
     data = request.get_json()
-    if not data:
-        print("Error: Invalid JSON payload. Aborting.")
-        return jsonify({'success': False, 'message': 'Invalid JSON payload. Please try again.'}), 400
     
-    print(f"Received JSON data: {json.dumps(data, indent=2)}")
-
     cart = session.get('cart', [])
-    print(f"Session cart: {cart}")
     
     if not cart:
-        print("Error: Cart is empty. Aborting.")
         return jsonify({'success': False, 'message': 'Please add items to your order'})
 
     total_price = sum(item['total_price'] for item in cart)
@@ -193,29 +180,23 @@ def checkout():
     card_number = data.get('card_number')
     expiry = data.get('expiry')
     cvv = data.get('cvv')
-    
-    print(f"Address: {address}, Pick-up: {pick_up}")
-    print(f"Card details received: Card: {card_number}, Expiry: {expiry}, CVV: {cvv}")
-
-    customer_id = session.get('customer_id')
-    email = session.get('email')
-    name = session.get('name')
-
-    # Ensure a customer_id is always present for the database
+    customer_id = session.get('user_id')
     if not customer_id:
-        # Use a temporary ID for guest users and store it in the session
-        temp_id = session.get('temp_id')
-        if not temp_id:
-            temp_id = str(uuid.uuid4())
-            session['temp_id'] = temp_id
-        customer_id = temp_id
-        
+        customer_id = session.get('temp_id')
+        if not customer_id:
+            customer_id = str(uuid.uuid4())
+            session['guest_id'] = customer_id
+
+    
+
+    #pick-up / delivery here later
+    #cart data from session?
+
+
     if not (card_number and expiry and cvv):
-        print("Validation Error: Missing card details. Aborting.")
         return jsonify({'success': False, 'message': 'Please fill in all card details'})
     
     if not (address or pick_up):
-        print("Validation Error: Missing address or pick-up. Aborting.")
         return jsonify ({'success': False, 'message': 'Please fill in pick-up or delivery'})
 
     if address == '':
@@ -225,48 +206,63 @@ def checkout():
         pick_up = None
 
     try:
+        print("executing to db")
         conn = get_db()
         c = conn.cursor()
 
         cart_json = json.dumps(cart)
-        
-        # Log the data about to be inserted
-        print("Attempting to insert into 'Order' table...")
-        insert_data = (customer_id, cart_json, address, pick_up, card_number, expiry, cvv, email, name, total_price)
-        print(f"Data to be inserted: {insert_data}")
+
+        print("Inserting order with:")
+        print("Customer ID:", customer_id)
+        print("Cart JSON:", cart_json)
+        print("Address:", address)
+        print("Pickup:", pick_up)
+        print("Total price:", total_price)
 
         c.execute('''
-            INSERT INTO "Order" (customer_id, cart, address, pick_up, card_number, expiry, cvv, email, name, total_price)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', insert_data)
+            INSERT INTO "Order" (customer_id, cart, address, pick_up, card_number, expiry, cvv, total_price)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (customer_id, cart_json, address, pick_up, card_number, expiry, cvv, total_price))
         
         order_id = c.lastrowid
+        print("Order inserted. Order ID:", order_id)
 
         for item in cart:
+            print("Inserting order item:", item)
             c.execute('''
                 INSERT INTO Order_items (order_id, food_id, quantity, price)
                 VALUES (?, ?, ?, ?)
-                ''', (order_id, item['food_id'], item['quantity'], item['total_price']))
-            
-        if session.get('customer_id'):
-         points_add = total_price * 0.10
-         c.execute('''
-             UPDATE Customer
-             SET points = points + ?
+            ''', (order_id, item['food_id'], item['quantity'], item['total_price']))
+
+
+        # Calculate points earned
+        points_earned = int(total_price)  # 1 point per dollar, adjust as needed
+        print(points_earned)
+
+        # Only add points if customer is logged in (not guest)
+        print("Session keys:", session.keys())
+        print("customer_id in session?", 'customer_id' in session)
+
+
+        if 'customer_id' in session:
+            print("attempting points")
+            c.execute('''
+                UPDATE Customer
+                SET points = COALESCE(points, 0) + ?
                 WHERE customer_id = ?
-         ''', (points_add, customer_id))
+            ''', (points_earned, session['customer_id']))
+            conn.commit()
 
         conn.commit()
-        
-        print("Order placed successfully. Committing transaction.")
-        
         session.pop('cart', None)
-        return jsonify ({'success': True, 'message': 'Order Successful'})
+        return jsonify({'success': True, 'message': 'Order Successful', 'orderId': order_id})
 
     except Exception as e:
-        print(f"Server error during checkout: {e}")
-        # Return a specific message that you can catch on the client
-        return jsonify ({'success': False, 'message': 'Server error: A database problem occurred.'})
+            import traceback
+            traceback.print_exc()
+            print("Checkout error:", str(e))
+            return jsonify({'success': False, 'message': 'Server error: A database problem occurred.'})
+
 
 # Route to add a new customer (for login, registration)
 @app.route("/login", methods=["GET", "POST"])
