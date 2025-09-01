@@ -320,7 +320,7 @@ def login():
             else:
                 return jsonify({"success": False, "message": "Invalid email or password"})
 
-    return redirect(url_for("menu"))
+    return render_template("login.html")
 
 # Route for logout
 @app.route("/logout")

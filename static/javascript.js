@@ -413,6 +413,22 @@ function openLoginModal() {
   }
 }
 
+function closeLoginModal() {
+  const loginModal = document.getElementById('login-modal');
+  if (loginModal) {
+    loginModal.style.display = 'none';
+  }
+}
+
+window.onclick = function(event) {
+  const loginModal = document.getElementById('login-modal');
+  if (event.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
+}
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // Show food nutrition modal on food grid click
   const foodGrid = document.querySelector('.food-grid');

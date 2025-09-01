@@ -52,6 +52,9 @@ nav.w3-bar .w3-bar-item {
 .w3-bar {
     align-items: center; 
 }
+
+
+
 /* Make sure dropdown-container is relatively positioned and on top */
 .dropdown-container {
     position: relative;
