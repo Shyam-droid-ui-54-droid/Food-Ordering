@@ -55,6 +55,71 @@
             flex: 1;
             font-size: 1.75rem;
         }
+
+        /* Mobile Phones: screens up to 600px wide */
+    @media (max-width: 600px) {
+        .company-name-header h1 {
+            font-size: 8vw;
+        }
+
+        nav.w3-bar .w3-bar-item {
+            font-size: 3vw;
+        }
+
+        .location-container {
+            max-width: 90vw; 
+        }
+
+        .location-content,
+        .location-content.justify-right {
+            flex-direction: column; /* Stack image and text vertically */
+            align-items: center; /* Center them when stacked */
+            flex-wrap: wrap; /* Allow content to wrap */
+        }
+
+        .location-image {
+            width: 90vw; 
+            height: auto; /* Let the height be determined by the aspect ratio */
+            margin: 10px 0; /* Adjust margin for stacked layout */
+        }
+        
+        .location-text {
+            font-size: 1rem; /* Adjust font size for better readability on small screens */
+            text-align: center;
+            margin: 10px 0;
+        }
+    }
+
+    /* Tablets: screens from 601px to 1024px wide */
+    @media (min-width: 601px) and (max-width: 1024px) {
+        .company-name-header h1 {
+            font-size: 6vw;
+        }
+        
+        nav.w3-bar .w3-bar-item {
+            font-size: 2vw;
+        }
+
+        .location-container {
+            max-width: 90vw;
+        }
+        
+        .location-content,
+        .location-content.justify-right {
+            align-items: center; 
+        }
+        
+        .location-image {
+            width: 45vw; /* Make images a bit larger for tablets */
+            height: 35vw;
+            margin: 10px;
+        }
+        
+        .location-text {
+            font-size: 1.25rem; /* Between phone and desktop font size */
+            margin: 10px;
+        }
+}
     </style>
 
     <div class="main-container">

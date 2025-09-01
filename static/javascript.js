@@ -430,8 +430,8 @@ window.onclick = function(event) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Show food nutrition modal on food grid click
-  const foodGrid = document.querySelector('.food-grid');
+  // Show food nutrition modal on food image click
+  const foodGrid = document.querySelector('.food-image');
   if (foodGrid) {
     foodGrid.addEventListener('click', async (event) => {
       const foodItem = event.target.closest('.food-item');

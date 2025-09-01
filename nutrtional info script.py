@@ -1,8 +1,8 @@
 import sqlite3
 import csv
 
-DB_FILE = 'database.db' # Your SQLite DB file path
-CSV_FILE = 'nutritional.csv' # Your comma-separated CSV file path
+DB_FILE = 'database.db'
+CSV_FILE = 'nutritional.csv' 
 
 def update_food_nutrition():
     conn = sqlite3.connect(DB_FILE)

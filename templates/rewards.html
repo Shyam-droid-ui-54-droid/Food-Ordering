@@ -91,6 +91,148 @@
             text-align: center;
             margin: auto;
         }
+
+        /* Mobile Phones: screens up to 600px wide */
+@media (max-width: 600px) {
+    .company-name-header h1 {
+        font-size: 8vw;
+    }
+
+    nav.w3-bar .w3-bar-item {
+        font-size: 3vw;
+    }
+
+    .location-container {
+        max-width: 90vw;
+    }
+
+    .location-content,
+    .location-content.justify-right {
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .location-image {
+        width: 90vw;
+        height: auto;
+        margin: 10px 0;
+    }
+    
+    .location-text {
+        font-size: 1rem;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .rewards-container,
+    .login-prompt-container {
+        padding: 1.5rem;
+        max-width: 95vw;
+    }
+
+    .rewards-container h1 {
+        font-size: 1.75rem;
+    }
+
+    .rewards-container h2 {
+        font-size: 1.25rem;
+    }
+
+    #pointsText {
+        margin-top:10vh;
+        font-size: 1rem;
+        margin-bottom:50%;
+    }
+
+    .progress-bar-container {
+        height: 1.5rem;
+        margin-top: 10vh;
+        margin-bottom: 1.5rem;
+    }
+    
+    .milestones {
+        gap: 0.5rem;
+    }
+
+    .milestone-circle {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.65rem;
+        border: 2px solid white;
+        margin-top: 2vh;
+    }
+
+    .milestone-text {
+        font-size: 0.75rem;
+        margin-top: 8vh;
+    }
+}
+/* Tablets: screens from 601px to 1024px wide */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .company-name-header h1 {
+        font-size: 6vw;
+    }
+    
+    nav.w3-bar .w3-bar-item {
+        font-size: 2vw;
+    }
+
+    .location-container {
+        max-width: 90vw;
+    }
+    
+    .location-content,
+    .location-content.justify-right {
+        align-items: center;
+    }
+    
+    .location-image {
+        width: 45vw;
+        height: 35vw;
+        margin: 10px;
+    }
+    
+    .location-text {
+        font-size: 1.25rem;
+        margin: 10px;
+    }
+    
+    .rewards-container,
+    .login-prompt-container {
+        padding: 4rem;
+        max-width: 90vw;
+    }
+
+    .rewards-container h1 {
+        font-size: 2.5rem;
+    }
+
+    .rewards-container h2 {
+        font-size: 1.5rem;
+    }
+    
+    #pointsText {
+        font-size: 1.25rem;
+    }
+
+    .progress-bar-container {
+        height: 2.5rem;
+        margin-top: 3rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .milestone-circle {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+    }
+
+    .milestone-text {
+        font-size: 1rem;
+        margin-top: 2.5rem;
+    }
+}
     </style>
 
     {% if is_logged_in %}

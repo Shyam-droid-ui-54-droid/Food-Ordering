@@ -36,20 +36,23 @@
     </nav>
     
     <!-- Login Contents -->
-<div id="login-modal" class="w3-modal" style="z-index: 10000">
-    <div class="w3-modal-content">
-        <span id="close-login-modal-btn" class="close">&times;</span>
-        <h2>Login</h2>
-        <form id="login-form" method="POST" action="{{ url_for('login') }}">
-            <p>Name</p>
-            <input class="w3-input w3-border" type="text" name="name" required>
-            <p>Email</p>
-            <input class="w3-input w3-border" type="email" name="email" required>
-            <p>Password</p>
-            <input class="w3-input w3-border" type="password" name="password" required>
-            <button class="w3-button w3-teal w3-margin-top">Login</button>
-        </form>
+<div id="login-modal" class="w3-modal" style="z-index: 10000; display: none;">
+    <div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width:400px; margin: auto; border-radius: 8px;">
+        <span id="close-login-modal-btn" class="w3-button w3-display-topright w3-large w3-hover-red" onclick="closeLoginModal()">&times;</span>
+        <div class="w3-container w3-padding-16">
+            <h2 class="w3-center w3-border-bottom w3-padding-16">Login</h2>
+            <form id="login-form" method="POST" action="{{ url_for('login') }}">
+                <p>Name</p>
+                <input class="w3-input w3-border" type="text" name="name" required style="border-radius: 4px;">
+                <p>Email</p>
+                <input class="w3-input w3-border" type="email" name="email" required style="border-radius: 4px;">
+                <p>Password</p>
+                <input class="w3-input w3-border" type="password" name="password" required style="border-radius: 4px;">
+                <button class="w3-button w3-teal w3-margin-top w3-block w3-round">Login</button>
+            </form>
+        </div>
     </div>
+</div>
 </div>
 
     <main> 

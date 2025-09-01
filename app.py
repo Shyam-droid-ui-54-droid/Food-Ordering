@@ -71,8 +71,8 @@ def food(food_id):
         for allergen in allergens:
             if allergen in nutrition_dict:
                 nutrition_dict[allergen] = ("Contains " + allergen.replace('_', ' ') 
-                                           if nutrition_dict[allergen] == 1 else 
-                                           "No " + allergen.replace('_', ' '))
+                                             if nutrition_dict[allergen] == 1 else 
+                                             "No " + allergen.replace('_', ' '))
         return nutrition_dict
 
     result_dict = dict(result)
@@ -268,30 +268,24 @@ def checkout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        if request.is_json:
-            data = request.get_json()
-            print("Received JSON data.")
-        else:
-            data = request.form
-            print("Received form data instead of JSON.")
-
-        # Move all the validation and login logic here, outside the if/else block
-        email = data.get("email")
-        password = data.get("password")
-        name = data.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        name = request.form.get("name")
         
+        # Validation checks
         if not re.match(r"^[a-zA-Z0-9_]{1,10}$", name):
-            return jsonify({"success": False, "message": "Name must be between 1 and 10 characters"})
+            flash("Name must be between 1 and 10 characters.", "error")
+            return redirect(url_for('login'))
         
         if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
-            return jsonify({"success": False, "message": "Invalid email"})
+            flash("Invalid email address.", "error")
+            return redirect(url_for('login'))
         
         if len(password) < 8 or not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$", password):
-            return jsonify({"success": False, "message": "Password must have: 8 characters, with at least one number and at least one letter"})
+            flash("Password must have: 8 characters, with at least one number and at least one letter.", "error")
+            return redirect(url_for('login'))
 
-        if not email or not password:
-            return jsonify({"success": False, "message": "Email and password are required"})
-        
+        # Check if user already exists
         customer = query_db("SELECT * FROM Customer WHERE email = ?", [email], one=True)
 
         if not customer:
@@ -306,9 +300,11 @@ def login():
                 session["customer_id"] = new_customer["customer_id"]
                 session["email"] = new_customer["email"]
                 session["name"] = new_customer["name"]
-                return jsonify({"success": True, "message": "Account created successfully!"})
+                flash("Account created successfully!", "success")
+                return redirect(url_for("rewards"))
             else:
-                return jsonify({"success": False, "message": "Failed to create account. Please try again."})
+                flash("Failed to create account. Please try again.", "error")
+                return redirect(url_for("login"))
         
         else:
             # User exists, check the password
@@ -316,10 +312,12 @@ def login():
                 session["customer_id"] = customer["customer_id"]
                 session["email"] = customer["email"]
                 session["name"] = customer["name"]
-                return jsonify({"success": True, "message": "Login successful!"})
+                flash("Login successful!", "success")
+                return redirect(url_for("rewards"))
             else:
-                return jsonify({"success": False, "message": "Invalid email or password"})
-
+                flash("Invalid email or password.", "error")
+                return redirect(url_for("login"))
+                
     return render_template("login.html")
 
 # Route for logout
@@ -371,4 +369,3 @@ def cause_505():
 
 if __name__ == "__main__":
     app.run(debug=True)
-

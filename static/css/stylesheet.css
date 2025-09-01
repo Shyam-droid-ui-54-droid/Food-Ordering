@@ -84,11 +84,11 @@ nav.w3-bar .w3-bar-item {
 .logout-button {
   display: block;
   width: 100%;
-  padding: 1vw 3vw;   /* match nav bar padding */
+  padding: 1vw 3vw;    /* match nav bar padding */
   text-align: center;
   color: black;
   text-decoration: none;
-  font-size: 1vw;     
+  font-size: 1vw;      
   line-height: 1.5;
   background: transparent;
   border: none;
@@ -379,6 +379,10 @@ nav.w3-bar .w3-bar-item {
   box-sizing: border-box;
 }
 
+#location-select {
+    width:100%
+}
+
 #payment-information {
   display: flex;
   flex-direction: column;
@@ -481,15 +485,78 @@ nav.w3-bar .w3-bar-item {
 
     /* Adjustments for cart on small screens */
     .cart-container {
-        width: 80%; /* Make the cart wider on mobile for better usability */
-        height: 100vh;
-        top: 0;
-        margin-top: 0;
+        width: 70%; /* Make the cart wider on mobile for better usability */
+        height: calc(100vh - var(--cart-top, 20vh));
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cart-sidebar {
+        padding: 10px;
+    }
+    
+    .cart-sidebar h3 {
+        font-size: 4vw;
+    }
+    
+    .cart-items-wrapper {
+        max-height: 60vh;
+        font-size: 1.5vw;
+    }
+    
+    #cart-items th, #cart-items td {
+        padding: 5px;
+        font-size: 2.5vw;
+    }
+    
+    #cart-items .item-quantity {
+        width: 5vw; /* Make quantity input wider */
+    }
+
+    #cart-button {
+        left: -3rem; /* Adjust position for mobile */
+        font-size: 1.5rem; /* Larger font size for tap target */
+        padding: 0.5rem 1rem;
+    }
+    
+    .order-type-selector {
+        width: 100%; /* Make it full width to fill the container */
+        padding: 5px;
+        flex-wrap: wrap; /* Allow the buttons to wrap to the next line */
+        margin-top: 10px;
+    }
+
+    .order-selector-button {
+        padding: 8px 12px;
+        margin: 5px;
+    }
+    
+    #pickup-location, #delivery-address {
+      width: 100%; /* Force inputs to fit within the container */
+      max-width: 100%;
+      box-sizing: border-box; /* Ensure padding is included in the width */
+      margin-left: 0;
+      margin-right: 0;
+      padding: 12px;
+      font-size: 14px;
+    }
+    
+    #payment-information {
+      width: 100%; /* Ensure payment info section fits on mobile */
+      margin: 12px 0;
+    }
+    
+    .checkout-button {
+        font-size: 4vw;
+        padding: 15px 20px;
+    }
+    
+    .footer {
+        font-size: 3vw;
     }
 }
 
 /* Media Queries for Tablets */
-@media (min-width: 601px) and (max-width: 1024px) {
+@media (min-width: 601px) and (max-width: 1424px) {
     .company-name-header {
         padding: 2vw 3vw;
     }
@@ -518,10 +585,57 @@ nav.w3-bar .w3-bar-item {
 
     .menu-page .food-text {
         padding: 1vw 1.5vw;
-        font-size: 2vw;
+        font-size: 1.5vw;
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 1em;
+        margin-bottom: 0.5em;
+        align-items: center;
+        text-align: center;
     }
 
     .menu-page .cart-add {
         font-size: 2vw;
     }
+
+    .cart-container {
+        width: 50%;
+        height: calc(100vh - var(--cart-top, 60px));
+    }
+
+    .cart-sidebar h3 {
+        font-size: 3vw;
+    }
+    
+    .cart-items-wrapper {
+        font-size: 1vw;
+    }
+    
+    #cart-items th, #cart-items td {
+        padding: 6px;
+        font-size: 1.8vw;
+    }
+    
+    #cart-items .item-quantity {
+        width: 3vw;
+    }
+
+    #cart-button {
+        left: -3rem;
+        font-size: 1.2rem;
+        padding: 0.4em 1em;
+    }
+
+    .checkout-button {
+        font-size: 3vw;
+        padding: 10px 15px;
+    }
+
+    .footer {
+        font-size: 2vw;
+    }
+
+
 }
